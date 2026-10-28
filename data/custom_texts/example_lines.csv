@@ -1,0 +1,4 @@
+entry_id,source_audio,target_audio,speaker,effect_profile,title,phase,text
+demo_001,demo_001.ogg,demo_001.ogg,Commander Vaelen,Default,Prologue: The Watchtower,Line,"Hört her, Reisender! Die Grenzen sind gesichert, doch im Osten zieht ein Sturm auf."
+demo_002,demo_002.ogg,demo_002.ogg, Necromancer Morvath,Undead,Crypt of Echoes,Line,"Ihr wagt es, die Ruhe der Gefallenen zu stören? Eure Seele wird uns dienen!"
+demo_003,demo_003.ogg,demo_003.ogg,Operator Sierra,Radio,Sector 7 Outpost,Line,"Hier Außenposten Sieben. Empfangen Ihr Signal klar und deutlich. Rücken Sie sofort vor."

@@ -1,0 +1,40 @@
+# Virtual environment & Python cache
+.venv
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables & secrets (NEVER commit!)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Generated audio packs & local voice seeds (BYOD — never commit user data!)
+output/raw_tts_wav/
+output/final_ogg/*.ogg
+output/*_voiceovers/
+output/qa_reports/*.json
+data/original/*.ogg
+data/original/*.wav
+data/original/*.mp3
+data/original/*_voiceovers
+data/reference_voices/**/*.wav
+data/reference_voices/*.json
+data/raw_de_text/*.json
+data/custom_texts/*.csv
+data/custom_texts/*.json
+!data/custom_texts/example_lines.csv
+data/local/
+
+# Keep folder structure via .gitkeep
+!data/**/.gitkeep
+!output/**/.gitkeep
+
+# Model weights
+*.pt
+*.pth
+*.gguf
+*.onnx
+job_log.txt

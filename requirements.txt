@@ -1,0 +1,27 @@
+# Core ML & Audio Synthesis (Python 3.11 + CUDA)
+torch>=2.1.0
+torchaudio>=2.1.0
+torchvision>=0.16.0
+coqui-tts[codec]>=0.25.0
+faster-whisper>=1.0.0
+nvidia-cublas-cu12>=12.6.0  # libcublas.so.12 für Faster-Whisper/CTranslate2 (torch bringt nur CUDA 13)
+
+# Audio Processing & Metadata
+soundfile>=0.12.1
+librosa>=0.10.1
+soxr>=0.3.7
+mutagen>=1.47.0
+
+# Text & QA Evaluation
+jiwer>=3.0.3
+python-Levenshtein>=0.25.0
+num2words>=0.5.13
+
+# Web, Scraping & Configuration
+pyyaml>=6.0.1
+python-dotenv>=1.0.1
+requests>=2.31.0
+beautifulsoup4>=4.12.3
+lxml>=5.1.0
+tqdm>=4.66.2
+rich>=13.7.1

@@ -1,0 +1,2002 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Echoes of Azeroth — Pro Audio Studio</title>
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --bg-deep: #07080b;
+      --panel: rgba(255, 255, 255, 0.028);
+      --panel-solid: #12141a;
+      --border: rgba(255, 255, 255, 0.075);
+      --border-strong: rgba(255, 255, 255, 0.14);
+      --text: #eef0f4;
+      --text-2: #9aa0ac;
+      --text-3: #5d6470;
+
+      --gold: #f0b93c;
+      --gold-soft: rgba(240, 185, 60, 0.12);
+      --gold-border: rgba(240, 185, 60, 0.35);
+      --purple: #b06cf5;
+      --purple-soft: rgba(176, 108, 245, 0.13);
+      --purple-border: rgba(176, 108, 245, 0.35);
+      --green: #34d17b;
+      --green-soft: rgba(52, 209, 123, 0.12);
+      --red: #ff6161;
+      --red-soft: rgba(255, 97, 97, 0.12);
+      --blue: #58a6ff;
+      --blue-soft: rgba(88, 166, 255, 0.12);
+
+      --radius: 16px;
+      --radius-sm: 10px;
+      --mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scrollbar-color: #2a2e38 var(--bg); }
+    body {
+      font-family: var(--sans);
+      background:
+        radial-gradient(1200px 500px at 50% -10%, rgba(240, 185, 60, 0.06), transparent 60%),
+        radial-gradient(900px 420px at 90% -5%, rgba(176, 108, 245, 0.05), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 4rem;
+    }
+    .wrap { max-width: 1500px; margin: 0 auto; padding: 0 1.6rem; }
+
+    /* ---------- Banner ---------- */
+    .ethics-banner {
+      margin: 1.1rem auto 0 auto;
+      padding: 0.7rem 1.1rem;
+      display: flex;
+      gap: 0.8rem;
+      align-items: flex-start;
+      background: rgba(240, 185, 60, 0.06);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      color: var(--text-2);
+    }
+    .ethics-banner b { color: var(--gold); font-weight: 600; }
+    .ethics-banner button.close {
+      margin-left: auto; background: none; border: none; color: var(--text-3);
+      cursor: pointer; font-size: 1rem; line-height: 1; padding: 0.2rem;
+    }
+    .ethics-banner button.close:hover { color: var(--text); }
+
+    /* ---------- Header ---------- */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.2rem 2rem;
+      padding: 1.4rem 0 1rem;
+    }
+    .brand { margin-right: auto; }
+    .brand .kicker {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--gold);
+    }
+    .brand h1 {
+      font-size: 1.55rem; font-weight: 700; letter-spacing: -0.02em;
+      margin-top: 0.15rem;
+    }
+    .brand h1 .thin { color: var(--text-2); font-weight: 400; }
+    .brand p { color: var(--text-3); font-size: 0.8rem; margin-top: 0.15rem; }
+
+    .stats-row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: stretch; }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.55rem 0.95rem;
+      min-width: 96px;
+      text-align: center;
+    }
+    .stat .v { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+    .stat .l { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); font-weight: 600; margin-top: 0.1rem; }
+    .stat .v.gold { color: var(--gold); }
+    .stat .v.green { color: var(--green); }
+    .stat .v.red { color: var(--red); }
+    .stat .v.purple { color: var(--purple); }
+
+    .lang-toggle {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--text-2);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 0.45rem 0.9rem;
+      cursor: pointer;
+      font-family: var(--sans);
+      transition: all 0.15s;
+    }
+    .lang-toggle:hover { border-color: var(--gold-border); color: var(--gold); }
+    .lang-toggle .active-lang { color: var(--gold); }
+
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.45rem 0.95rem; border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      font-size: 0.78rem; font-weight: 600; color: var(--text-2);
+      white-space: nowrap;
+    }
+    .status-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); }
+    .status-badge.running { border-color: var(--gold-border); color: var(--gold); background: var(--gold-soft); }
+    .status-badge.running .dot { background: var(--gold); box-shadow: 0 0 10px var(--gold); animation: pulse 1.4s infinite; }
+    .status-badge.done { border-color: rgba(52, 209, 123, 0.4); color: var(--green); }
+    .status-badge.done .dot { background: var(--green); }
+    .status-badge.error { border-color: rgba(255, 97, 97, 0.4); color: var(--red); }
+    .status-badge.error .dot { background: var(--red); }
+    @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1);} 50% { opacity: 0.35; transform: scale(0.75);} }
+
+    /* ---------- Panels ---------- */
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.4rem;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 10px 34px rgba(0, 0, 0, 0.35);
+    }
+    .panel + .panel { margin-top: 1rem; }
+    .panel-title {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--text-3);
+      margin-bottom: 1rem;
+    }
+    .panel-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+    /* ---------- Live panel ---------- */
+    .steps { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+    .step-chip {
+      display: flex; align-items: center; gap: 0.45rem;
+      padding: 0.4rem 0.8rem; border-radius: 999px;
+      border: 1px solid var(--border); background: rgba(255,255,255,0.02);
+      font-size: 0.72rem; color: var(--text-3); font-weight: 600;
+      transition: all 0.25s ease;
+    }
+    .step-chip .n {
+      width: 18px; height: 18px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 0.62rem; font-weight: 700; background: rgba(255,255,255,0.06);
+    }
+    .step-chip.done { color: var(--text-2); border-color: rgba(52, 209, 123, 0.3); }
+    .step-chip.done .n { background: var(--green); color: #06240f; }
+    .step-chip.active {
+      color: var(--gold); border-color: var(--gold-border); background: var(--gold-soft);
+      box-shadow: 0 0 18px rgba(240, 185, 60, 0.12);
+    }
+    .step-chip.active .n { background: var(--gold); color: #1d1600; animation: pulse 1.4s infinite; }
+
+    .live-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1.1rem; }
+    @media (max-width: 980px) { .live-grid { grid-template-columns: 1fr; } }
+
+    .progress-block { display: flex; flex-direction: column; gap: 0.55rem; }
+    .progress-head { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-2); }
+    .progress-head b { color: var(--text); font-variant-numeric: tabular-nums; }
+    .bar { height: 8px; border-radius: 999px; background: rgba(255,255,255,0.06); overflow: hidden; }
+    .bar > i {
+      display: block; height: 100%; width: 0%;
+      background: linear-gradient(90deg, #ca8e17, var(--gold) 60%, #ffdf8e);
+      border-radius: 999px;
+      transition: width 0.6s cubic-bezier(0.3, 0.8, 0.3, 1);
+      position: relative; overflow: hidden;
+    }
+    .bar > i::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+      animation: shimmer 1.6s infinite;
+    }
+    @keyframes shimmer { 0% { transform: translateX(-100%);} 100% { transform: translateX(100%);} }
+
+    .kv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.5rem; }
+    .kv {
+      background: rgba(0,0,0,0.28); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.6rem 0.8rem;
+    }
+    .kv .l { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); font-weight: 700; }
+    .kv .v { font-size: 0.92rem; font-weight: 600; margin-top: 0.15rem; font-variant-numeric: tabular-nums; }
+    .kv .v.gold { color: var(--gold); } .kv .v.green { color: var(--green); }
+    .kv .v.red { color: var(--red); } .kv .v.purple { color: var(--purple); }
+
+    .current-card {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border-strong);
+      border-left: 3px solid var(--gold);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+    }
+    .current-card .id { font-family: var(--mono); font-size: 0.78rem; color: var(--gold); }
+    .current-card .title { font-size: 0.98rem; font-weight: 650; margin: 0.2rem 0; }
+    .current-card .meta { font-size: 0.76rem; color: var(--text-2); display: flex; gap: 0.9rem; flex-wrap: wrap; }
+    .current-card .meta span { display: inline-flex; align-items: center; gap: 0.3rem; }
+    .listen-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem; }
+    .chip-status {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-size: 0.7rem; font-weight: 700; padding: 0.18rem 0.6rem;
+      border-radius: 999px; letter-spacing: 0.02em;
+    }
+    .chip-status.validating { background: var(--blue-soft); color: var(--blue); }
+    .chip-status.retry { background: var(--gold-soft); color: var(--gold); }
+    .chip-status.ai { background: var(--purple-soft); color: var(--purple); }
+    .chip-status.pass { background: var(--green-soft); color: var(--green); }
+    .chip-status.fail { background: var(--red-soft); color: var(--red); }
+
+    /* AI feed */
+    .ai-feed { display: flex; flex-direction: column; gap: 0.45rem; }
+    .ai-line {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.78rem; padding: 0.5rem 0.7rem;
+      border-radius: var(--radius-sm);
+      background: rgba(0,0,0,0.24); border: 1px solid var(--border);
+    }
+    .ai-line .t { color: var(--text-3); font-family: var(--mono); font-size: 0.68rem; }
+    .ai-line .provider { color: var(--purple); font-weight: 700; }
+    .ai-line .ok { color: var(--green); }
+    .ai-line .fail { color: var(--red); }
+    .ai-line .entry { color: var(--text-2); font-family: var(--mono); font-size: 0.72rem; }
+
+    .empty-note { color: var(--text-3); font-size: 0.8rem; padding: 0.4rem 0; }
+
+    /* ---------- Launchpad ---------- */
+    .launch-row { display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center; }
+    select, input[type="text"], input[type="password"] {
+      background: #171a21;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.55rem 0.85rem;
+      font-size: 0.86rem; font-family: var(--sans);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    select:focus, input:focus {
+      border-color: var(--gold-border);
+      box-shadow: 0 0 0 3px rgba(240, 185, 60, 0.1);
+    }
+    select { cursor: pointer; }
+    select option { background: #171a21; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      padding: 0.55rem 1.1rem; border-radius: var(--radius-sm);
+      font-size: 0.84rem; font-weight: 650; font-family: var(--sans);
+      border: 1px solid var(--border-strong);
+      background: linear-gradient(180deg, #23262f, #191c23);
+      color: var(--text); cursor: pointer;
+      transition: transform 0.12s, filter 0.12s, box-shadow 0.12s;
+      white-space: nowrap;
+    }
+    .btn:hover:not(:disabled) { filter: brightness(1.15); transform: translateY(-1px); }
+    .btn:active:not(:disabled) { transform: translateY(0); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn.gold {
+      background: linear-gradient(180deg, #f7c84f, #d29b1f);
+      border-color: #ffe08a; color: #211700; font-weight: 750;
+      box-shadow: 0 2px 16px rgba(240, 185, 60, 0.3);
+    }
+    .btn.green { background: linear-gradient(180deg, #2fae68, #1f7d49); border-color: #63e6a2; color: #03130a; }
+    .btn.ghost { background: transparent; }
+    .btn.danger { background: rgba(255, 97, 97, 0.1); border-color: rgba(255, 97, 97, 0.4); color: var(--red); }
+
+    .console {
+      margin-top: 0.9rem;
+      display: none;
+      background: #060709;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      color: #b9c0cc;
+      padding: 0.85rem 1rem;
+      height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      line-height: 1.55;
+    }
+
+    /* ---------- Layout ---------- */
+    .layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 1rem; align-items: start; }
+    @media (max-width: 1150px) { .layout { grid-template-columns: 1fr; } }
+
+    .controls { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin: 1rem 0; }
+    .controls .search { flex: 1; min-width: 240px; }
+    .status-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .chip-filter {
+      padding: 0.42rem 0.85rem; border-radius: 999px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--text-2); font-size: 0.76rem; font-weight: 650;
+      cursor: pointer; font-family: var(--sans);
+      transition: all 0.15s;
+    }
+    .chip-filter:hover { border-color: var(--border-strong); color: var(--text); }
+    .chip-filter.on { background: var(--gold-soft); border-color: var(--gold-border); color: var(--gold); }
+    .chip-filter .cnt { opacity: 0.65; font-variant-numeric: tabular-nums; }
+    .chip-exp.on { background: var(--green-soft); border-color: rgba(52,209,123,0.55); color: var(--green); }
+    .chip-exp:not(.on) { background: var(--red-soft); border-color: rgba(255,87,87,0.45); color: var(--red); opacity: 0.85; }
+    .chip-exp:not(.on):hover { border-color: var(--red); color: var(--red); opacity: 1; }
+
+    /* ---------- Cards ---------- */
+    .grid { display: flex; flex-direction: column; gap: 0.85rem; }
+    .quest-card {
+      position: relative;
+      background: var(--panel-solid);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.15rem 1rem 1.25rem;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .quest-card::before {
+      content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+      background: var(--text-3); opacity: 0.5;
+    }
+    .quest-card.st-pass::before { background: var(--green); }
+    .quest-card.st-fail::before { background: var(--red); }
+    .quest-card.st-pending::before { background: var(--text-3); }
+    .quest-card.st-unverified::before { background: var(--blue); }
+    .quest-card.st-processing::before { background: var(--gold); box-shadow: 0 0 14px var(--gold); }
+    .quest-card:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+    .quest-card.st-processing { border-color: var(--gold-border); }
+
+    .card-top { display: flex; justify-content: space-between; gap: 0.9rem; flex-wrap: wrap; align-items: flex-start; }
+    .card-idline { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .badge {
+      font-size: 0.66rem; font-weight: 700; letter-spacing: 0.04em;
+      padding: 0.16rem 0.55rem; border-radius: 6px;
+      font-family: var(--mono);
+    }
+    .badge.file { background: rgba(255,255,255,0.05); color: var(--text-2); border: 1px solid var(--border); }
+    .badge.race { background: var(--purple-soft); color: #cf9bff; border: 1px solid var(--purple-border); }
+    .badge.zone { background: rgba(255,255,255,0.03); color: var(--text-3); border: 1px solid var(--border); }
+    .badge.live { background: var(--gold-soft); color: var(--gold); border: 1px solid var(--gold-border); }
+
+    .card-title { font-size: 1.02rem; font-weight: 680; letter-spacing: -0.01em; margin-top: 0.45rem; }
+    .card-title .npc { color: var(--gold); }
+    .card-title .phase { color: var(--text-3); font-weight: 500; font-size: 0.9rem; }
+
+    .qa-line { display: flex; align-items: center; gap: 0.7rem; margin-top: 0.7rem; flex-wrap: wrap; }
+    .matchbar { flex: 1; min-width: 140px; height: 6px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden; }
+    .matchbar > i { display: block; height: 100%; border-radius: 999px; transition: width 0.5s ease; }
+    .qa-line .qa-txt { font-size: 0.76rem; color: var(--text-2); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .qa-line .qa-txt.ok { color: var(--green); }
+    .qa-line .qa-txt.bad { color: var(--red); }
+
+    .card-body { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 1rem; margin-top: 0.85rem; }
+    @media (max-width: 900px) { .card-body { grid-template-columns: 1fr; } }
+    .text-box {
+      background: rgba(0,0,0,0.24); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.85rem 1rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .de-text { font-size: 0.9rem; line-height: 1.6; color: #e8eaf0; }
+    .sub-meta { font-size: 0.72rem; color: var(--text-3); border-top: 1px solid var(--border); padding-top: 0.6rem; line-height: 1.6; }
+    .sub-meta b { color: var(--text-2); font-weight: 600; }
+
+    .players { display: flex; flex-direction: column; gap: 0.5rem; }
+    .player-row {
+      display: flex; align-items: center; gap: 0.7rem;
+      background: rgba(0,0,0,0.24); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 0.5rem 0.8rem;
+    }
+    .player-row.de { border-color: var(--gold-border); background: linear-gradient(90deg, rgba(240,185,60,0.05), rgba(0,0,0,0.24)); }
+    .player-row.raw { border-color: var(--purple-border); background: linear-gradient(90deg, rgba(176,108,245,0.05), rgba(0,0,0,0.24)); }
+    .lang-tag { min-width: 118px; display: flex; flex-direction: column; }
+    .lang-tag .main { font-size: 0.78rem; font-weight: 700; }
+    .lang-tag .sub { font-size: 0.66rem; color: var(--text-3); }
+    .player-row.de .lang-tag .main { color: var(--gold); }
+    .player-row.raw .lang-tag .main { color: var(--purple); }
+    .player-row:not(.de):not(.raw) .lang-tag .main { color: var(--blue); }
+    audio { flex: 1; height: 34px; min-width: 0; }
+
+    .card-actions { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-top: 0.5rem; }
+    .btn-mini {
+      font-size: 0.72rem; font-weight: 650; font-family: var(--sans);
+      padding: 0.4rem 0.75rem; border-radius: 8px;
+      border: 1px solid var(--border); background: rgba(255,255,255,0.04);
+      color: var(--text-2); cursor: pointer; text-decoration: none;
+      transition: all 0.12s;
+    }
+    .btn-mini:hover { color: var(--text); border-color: var(--border-strong); }
+    .btn-mini.gold { color: var(--gold); border-color: var(--gold-border); background: var(--gold-soft); }
+    .btn-mini.blue { color: var(--blue); }
+    .btn-mini.purple { color: var(--purple); border-color: var(--purple-border); background: var(--purple-soft); }
+    .btn-mini.red { color: var(--red); border-color: rgba(255,97,97,0.35); background: var(--red-soft); }
+    .btn-mini:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .load-more-wrap { text-align: center; margin-top: 1rem; }
+
+    /* ---------- Aside ---------- */
+    aside {
+      position: sticky;
+      top: 1rem;
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
+      padding-right: 0.35rem;
+      margin-right: -0.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      scrollbar-width: thin;
+      scrollbar-color: #2a2e38 transparent;
+    }
+    aside::-webkit-scrollbar { width: 6px; }
+    aside::-webkit-scrollbar-thumb { background: #2a2e38; border-radius: 3px; }
+    @media (max-width: 1150px) {
+      aside { position: static; max-height: none; overflow: visible; padding-right: 0; margin-right: 0; }
+    }
+    .ov-rows { display: flex; flex-direction: column; gap: 0.6rem; }
+    .ov-row { display: flex; justify-content: space-between; font-size: 0.84rem; }
+    .ov-row .l { color: var(--text-2); }
+    .ov-row .v { font-weight: 700; font-variant-numeric: tabular-nums; }
+    .mini-bar { height: 5px; border-radius: 999px; background: rgba(255,255,255,0.06); overflow: hidden; margin-top: 0.25rem; }
+    .mini-bar > i { display: block; height: 100%; border-radius: 999px; }
+
+    .form { display: flex; flex-direction: column; gap: 0.6rem; }
+    .form label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); }
+    .form .field { display: flex; flex-direction: column; gap: 0.25rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .model-row { display: flex; gap: 0.5rem; align-items: center; }
+    .form input, .form select { width: 100%; }
+    .key-hint { font-size: 0.7rem; color: var(--text-3); line-height: 1.45; }
+    .key-hint b { color: var(--green); }
+    .switch { display: flex; align-items: center; gap: 0.55rem; cursor: pointer; font-size: 0.8rem; color: var(--text-2); }
+    .switch input { accent-color: var(--gold); width: 15px; height: 15px; }
+    .test-result { font-size: 0.76rem; padding: 0.5rem 0.7rem; border-radius: var(--radius-sm); display: none; }
+    .test-result.ok { display: block; background: var(--green-soft); color: var(--green); border: 1px solid rgba(52,209,123,0.3); }
+    .test-result.fail { display: block; background: var(--red-soft); color: var(--red); border: 1px solid rgba(255,97,97,0.3); }
+
+    /* ---------- Toasts ---------- */
+    #toasts { position: fixed; bottom: 1.2rem; right: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; z-index: 100; }
+    .toast {
+      padding: 0.7rem 1rem; border-radius: var(--radius-sm);
+      background: #191c23; border: 1px solid var(--border-strong);
+      font-size: 0.82rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      animation: slidein 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+      max-width: 380px;
+    }
+    .toast.ok { border-color: rgba(52,209,123,0.45); }
+    .toast.err { border-color: rgba(255,97,97,0.45); }
+    .toast.gold { border-color: var(--gold-border); }
+    @keyframes slidein { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+    .empty-state { text-align: center; padding: 3.5rem 1rem; color: var(--text-3); }
+    .empty-state .big { font-size: 1.05rem; color: var(--text-2); margin-bottom: 0.4rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="ethics-banner" id="ethicsBanner">
+      <div id="ethicsText"></div>
+      <button class="close" onclick="document.getElementById('ethicsBanner').style.display='none'" title="✕">✕</button>
+    </div>
+
+    <header>
+      <div class="brand">
+        <div class="kicker" data-i18n="kicker"></div>
+        <h1>Echoes of Azeroth <span class="thin">— Pro Audio Studio</span></h1>
+        <p data-i18n="brand_sub"></p>
+      </div>
+      <div class="stats-row">
+        <div class="stat"><div class="v" id="statTotal">—</div><div class="l" data-i18n="stat_quests"></div></div>
+        <div class="stat"><div class="v red" id="statProblems">—</div><div class="l" data-i18n="stat_problems"></div></div>
+        <div class="stat"><div class="v green" id="statPass">—</div><div class="l" data-i18n="stat_ok"></div></div>
+        <div class="stat"><div class="v" id="statCer">—</div><div class="l">Ø CER</div></div>
+        <div class="stat"><div class="v purple" id="statAI">—</div><div class="l" data-i18n="stat_ai"></div></div>
+        <div class="status-badge" id="liveStatusBadge"><span class="dot"></span><span id="statusBadgeText" data-i18n="idle"></span></div>
+        <button class="lang-toggle" id="langToggle" onclick="toggleLang()" title="Language / Sprache"></button>
+      </div>
+    </header>
+
+    <!-- ================= LIVE VALIDATION ================= -->
+    <section class="panel" id="livePanel">
+      <div class="panel-title" data-i18n="panel_live"></div>
+      <div class="steps" id="stepChips"></div>
+      <div class="live-grid">
+        <div class="progress-block">
+          <div class="progress-head">
+            <span><span id="liveStepLabel" data-i18n="ready"></span> <span class="badge race" id="liveExpansion" style="display:none;"></span></span>
+            <span><b id="liveCounts">0 / 0</b> · ETA <b id="liveEta">—</b></span>
+          </div>
+          <div class="bar"><i id="progressFill"></i></div>
+          <div class="current-card" id="currentCard" style="display:none;">
+            <div class="id" id="curId">—</div>
+            <div class="title" id="curTitle">—</div>
+            <div class="meta">
+              <span id="curNpc">—</span>
+              <span id="curExpansion"></span>
+              <span id="curStatusChip"></span>
+              <span id="curCer">—</span>
+            </div>
+            <div class="listen-row" id="curListenRow"></div>
+          </div>
+          <div class="empty-note" id="liveIdleNote"></div>
+          <div class="kv-grid" id="liveKvGrid"></div>
+        </div>
+        <div class="ai-feed">
+          <div class="panel-title" style="margin-bottom:0.6rem;" data-i18n="panel_ai"></div>
+          <div class="ai-line" id="aiProviderLine">
+            <span class="provider" id="aiProviderName" data-i18n="ai_inactive"></span>
+            <span class="t" id="aiProviderMeta"></span>
+            <span style="margin-left:auto" id="aiProviderOk"></span>
+          </div>
+          <div class="kv-grid" id="aiUsageGrid"></div>
+          <div id="aiFeed"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LAUNCHPAD ================= -->
+    <section class="panel">
+      <div class="panel-title" data-i18n="panel_launch"></div>
+      <div class="launch-row">
+        <div style="display:flex;flex-direction:column;gap:0.4rem;flex:1;min-width:300px;">
+          <div class="key-hint" data-i18n="exp_select"></div>
+          <div class="status-chips" id="expansionChips"></div>
+        </div>
+        <select id="launchMode" style="flex:1;min-width:280px;">
+          <option value="audit_100" data-i18n="mode_audit100"></option>
+          <option value="audit_full" data-i18n="mode_auditfull"></option>
+          <option value="pilot_20" data-i18n="mode_pilot"></option>
+          <option value="full_expansion" data-i18n="mode_full"></option>
+          <option value="rebuild_bundle" data-i18n="mode_rebundle"></option>
+          <option value="repair_failed" data-i18n="mode_repair"></option>
+        </select>
+        <button class="btn gold" id="startJobBtn" onclick="startJob()" data-i18n="start"></button>
+            <button class="btn stop" id="stopBtn" onclick="stopJob()" data-i18n="stop" style="display:none"></button>
+        <button class="btn gold" id="topupBtn" onclick="ackTopup()" data-i18n="topup_done_btn" style="display:none"></button>
+        <button class="btn ghost" onclick="toggleConsole()" id="consoleToggleBtn" data-i18n="console"></button>
+        <button class="btn ghost" id="consoleCopyBtn" onclick="copyConsole()" data-i18n="console_copy" style="display:none;"></button>
+      </div>
+      <pre class="console" id="jobConsole"></pre>
+    </section>
+
+    <div class="layout">
+      <!-- ================= MAIN ================= -->
+      <main>
+        <div class="controls">
+          <input type="text" id="searchInput" class="search" data-i18n-ph="search_ph" />
+          <select id="speakerFilter"><option value="all" data-i18n="all_speakers"></option></select>
+          <select id="raceFilter"><option value="all" data-i18n="all_races"></option></select>
+          <select id="sortSelect">
+            <option value="file" data-i18n="sort_file"></option>
+            <option value="cer" data-i18n="sort_cer"></option>
+            <option value="title" data-i18n="sort_title"></option>
+          </select>
+        </div>
+        <div class="status-chips" id="statusChips"></div>
+        <div class="grid" id="playlistContainer"><div class="empty-state"><div class="big" data-i18n="no_data"></div><span data-i18n="no_data_hint"></span></div></div>
+        <div class="load-more-wrap"><button class="btn ghost" id="loadMoreBtn" style="display:none;" onclick="loadMore()" data-i18n="load_more"></button></div>
+      </main>
+
+      <!-- ================= ASIDE ================= -->
+      <aside>
+        <section class="panel">
+          <div class="panel-title" data-i18n="panel_expansions"></div>
+          <div class="ov-rows" id="expansionsRows"><div class="empty-note" data-i18n="exp_never"></div></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title" data-i18n="panel_overview"></div>
+          <div class="ov-rows" id="overviewRows"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title" data-i18n="panel_audit"></div>
+          <div id="auditBody"><div class="empty-note" data-i18n="no_audit"></div></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title" data-i18n="panel_aisettings"></div>
+          <div class="form">
+            <div class="switch">
+              <input type="checkbox" id="aiEnabled" />
+              <label for="aiEnabled" style="margin:0;text-transform:none;letter-spacing:0;font-size:0.82rem;" data-i18n="ai_enable"></label>
+            </div>
+            <div class="field">
+              <label for="aiProvider" data-i18n="ai_provider"></label>
+              <select id="aiProvider"></select>
+              <div class="key-hint" id="aiProviderHint" style="margin-top:0.3rem;"></div>
+              <div class="key-hint" id="pricingHint" style="margin-top:0.25rem;"></div>
+            </div>
+            <div class="field">
+              <label for="aiModel" data-i18n="ai_model"></label>
+              <div class="model-row">
+                <select id="aiModel" style="flex:1;"></select>
+                <button class="btn" id="aiModelsBtn" onclick="listModels()" style="padding:0.5rem 0.85rem;white-space:nowrap;" data-i18n="ai_models_load"></button>
+              </div>
+              <input type="text" id="aiModelCustom" data-i18n-ph="ai_model_custom" style="display:none;margin-top:0.35rem;" />
+            </div>
+            <div class="field">
+              <label for="aiBaseUrl" data-i18n="ai_baseurl"></label>
+              <input type="text" id="aiBaseUrl" data-i18n-ph="ai_baseurl_ph" />
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="aiRetries" data-i18n="ai_retries"></label>
+                <input type="text" id="aiRetries" inputmode="numeric" value="3" />
+              </div>
+              <div class="field">
+                <label for="aiTrigger" data-i18n="ai_trigger"></label>
+                <input type="text" id="aiTrigger" inputmode="numeric" value="3" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="aiKey" data-i18n="ai_key"></label>
+              <input type="password" id="aiKey" placeholder="••••••••" autocomplete="off" />
+            </div>
+            <div class="key-hint" id="aiKeyHint"></div>
+            <div class="form-row">
+              <button class="btn gold" onclick="saveSettings()" style="justify-content:center;" data-i18n="save"></button>
+              <button class="btn" onclick="testSettings()" style="justify-content:center;" data-i18n="ai_test"></button>
+            </div>
+            <div class="test-result" id="testResult"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title" data-i18n="panel_activity"></div>
+          <div id="activityFeed"><div class="empty-note">—</div></div>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <div id="toasts"></div>
+
+  <script>
+    "use strict";
+
+    const I18N = {
+      de: {
+        kicker: "World of Warcraft · deDE Localization",
+        brand_sub: "XTTS-v2 · Faster-Whisper QA · EBU R128 (−16 LUFS) · optionale KI-Reparatur",
+        ethics: "Bitte lade generierte Sprachpakete nicht eigenmächtig auf CurseForge/Wago hoch — respektiere die Arbeit von <b>Tuubby</b> &amp; dem Chatty-Little-NPC-Team. Die finale Qualitätskontrolle im Studio liegt bei dir.",
+        stat_quests: "Quests", stat_problems: "Probleme", stat_ok: "QA OK", stat_ai: "AI-Calls",
+        idle: "Idle", running: "Läuft", running_ext: "Läuft (extern gestartet)", done: "Fertig", error: "Fehler",
+        ready: "Bereit", step_of: "Schritt", eta: "ETA",
+        no_job: "Kein Pipeline-Job aktiv. Starte eine Aktion im Launchpad, um Live-Fortschritt zu sehen.",
+        prepping: "Schritt wird vorbereitet …",
+        panel_live: "Live-Validierung & Pipeline-Status",
+        panel_ai: "KI-Aktivität (Repair nach Fehlversuchen)",
+        panel_launch: "Launchpad · Pipeline & Quality Control",
+        panel_overview: "Qualitäts-Übersicht",
+        panel_audit: "Independent Audit",
+        panel_aisettings: "KI-Einstellungen · Repair",
+        panel_activity: "Letzte Aktivität",
+        panel_expansions: "Expansionen",
+        exp_select: "Zu lokalisierende Addons auswählen (mehrfach möglich):",
+        exp_none_selected: "Bitte mindestens ein Addon auswählen.",
+        exp_never: "Noch keine Expansion gelaufen.",
+        exp_finished: "fertig", exp_stopped: "pausiert",
+        ai_inactive: "Inaktiv", ai_none_configured: "(keine externe KI konfiguriert)", ai_ready: "✦ bereit", ai_off: "◌ aus",
+        ai_no_calls: "Noch keine KI-Aufrufe in diesem Lauf.",
+        kv_processed: "Verarbeitet", kv_passed: "Bestanden", kv_failed: "Probleme", kv_retried: "Retries", kv_repaired: "KI-repariert",
+        kv_tokens: "Tokens gesamt", kv_prompt: "Prompt", kv_completion: "Antwort", kv_cost: "Kosten (USD)",
+        step1: "Analyse", step2: "Voice-Seeds", step3: "Script", step4: "Synthese", step5: "Validierung", step6: "Mastering", step7: "Audit",
+        validating: "Prüfung…", passed: "✓ Bestanden", failed: "✕ Fehlgeschlagen", ai_repair: "KI-Repair",
+        attempt: "↻ Versuch", synthesizing: "Synthese…", cached: "Gecacht", mastering: "Mastering…", auditing: "Audit…",
+        scripting: "Script…", seed: "Seed…", scraping: "Scraping…",
+        npc: "NPC", cer: "CER",
+        listen: "Live anhören", listen_en: "▶ EN Original", listen_raw: "▶ RAW (ungemastert)", listen_de: "▶ DE (gemastert)",
+        mode_audit100: "100-Quest Zufalls-Audit (schnell)",
+        mode_auditfull: "Vollständiger Audit aller gemasterten Dateien",
+        mode_pilot: "20-Quest Benchmark-Pilot + Audit",
+        mode_full: "Vollständige Expansion (Quests + Gossip + Audit)",
+        mode_rebundle: "Bundle neu machen (nur Schritt 6: Pakete bauen + installieren)",
+        mode_repair: "Repariere Fails (bis zu 20 Versuche, dann Bundle neu machen)",
+        start: "▶ Start", console: "Konsole", console_hide: "Konsole ausblenden", console_copy: "Kopieren", console_copied: "Konsole kopiert ✓",
+        search_ph: "Suche: Quest-ID, Titel, NPC oder Text …",
+        all_speakers: "Alle Sprecher", all_races: "Alle Rassen / FX",
+        sort_file: "Sortierung: Datei", sort_cer: "Sortierung: Schlechtestes CER zuerst", sort_title: "Sortierung: Titel",
+        chip_all: "Alle", chip_fail: "Probleme", chip_pass: "OK", chip_open: "Offen / ungeprüft",
+        no_data: "Noch keine Daten", no_data_hint: "Starte den Pilot oder die volle Expansion — danach erscheinen die Quests hier.",
+        no_results: "Keine Einträge gefunden", no_results_hint: "Filter oder Suche anpassen.",
+        load_more: "Mehr laden", load_more_more: "weitere von",
+        fx: "FX", in_progress: "● in Arbeit", audit_pass: "Audit ✓", audit_fail: "Audit ✕",
+        qa_match: "QA", attempts_1: "Versuch", attempts_n: "Versuche",
+        ai_repaired_badge: "✦ KI-repariert",
+        processing_now: "wird gerade verarbeitet …", audio_no_qa: "Audio vorhanden — QA steht aus", not_generated: "noch nicht generiert",
+        script: "Script", phonetics: "Phonetik", standard_phonetics: "Standard-Phonetik", direction: "Regie", whisper: "Whisper",
+        de_mastered: "DE Lokalisiert", en_original: "EN Original", raw_unmastered: "RAW Ungemastert",
+        reference: "Referenz", en_gossip_ref: "EN-Zuordnung geschätzt (nach Länge)", unmastered_sub: "24 kHz WAV · vor Mastering",
+        ab_compare: "A/B vergleichen", play_de: "▶ DE", regen: "↻ Neu generieren",
+        stop: "⏹ Stopp", stop_toast: "Job wird gestoppt …", voice_seed: "Voice-Seed",
+        topup_wait: "⏸ Pausiert — DeepSeek-Guthaben leer", topup_done_btn: "✅ TopUp erledigt — weiter",
+        topup_done_toast: "TopUp bestätigt — der Job läuft gleich automatisch weiter.",
+        approve: "✓ Als OK markieren", approved_by_ear: "Freigegeben (Hörprobe)", approved_toast: "als OK markiert ✓",
+        not_rendered: "Noch nicht gerendert (Schritt 6)",
+        ov_total: "Gesamt-Quests", ov_validated: "Validierte Quests", ov_passed: "QA bestanden",
+        ov_problems: "Mit Problemen", ov_repaired: "KI-repariert", ov_retries: "Retries", ov_success: "Erfolgsquote (QA)",
+        no_audit: "Noch kein Audit-Report vorhanden.",
+        aud_checked: "Geprüft", aud_passed: "Bestanden", aud_avgcer: "Ø Post-FX CER", aud_ready: "Release-ready",
+        aud_yes: "✓ Ja", aud_no: "— noch nicht",
+        ai_enable: "KI-Reparatur aktivieren", ai_provider: "Provider",
+        ai_provider_hint: "Optional: Ohne Provider läuft die Pipeline trotzdem — fehlgeschlagene Zeilen werden dann nur nicht KI-repariert.",
+        ai_model: "Modell", ai_models_load: "Modelle laden", ai_models_loading: "Lade …",
+        ai_model_custom: "Eigene Modell-ID …", ai_baseurl: "Base-URL (optional)", ai_baseurl_ph: "Standard des Providers",
+        ai_trigger: "Einsatz nach", ai_retries: "Max. Versuche gesamt", ai_key: "API-Key",
+        key_set: "Key gespeichert: liegt lokal in der git-ignorierten <code>.env</code> — nie auf GitHub.",
+        key_unset: "Kein Key gesetzt. Keys werden ausschließlich in die git-ignorierte <code>.env</code> geschrieben.",
+        save: "Speichern", ai_test: "Verbindung testen",
+        pricing: "Preisbasis", pricing_est: "(Schätzung)", pricing_per: "pro 1M Tokens (Input/Output)",
+        testing: "Teste Verbindung …", models_error: "Keine Modelle gefunden.",
+        saved_toast: "KI-Einstellungen gespeichert (Key bleibt lokal in .env)",
+        save_error: "Speichern fehlgeschlagen",
+        job_started: "Job gestartet", job_start_error: "Start fehlgeschlagen",
+        job_running_busy: "Ein Job läuft bereits — bitte warten.",
+        regen_started: "Regenerierung gestartet (TTS → QA → FX)", regen_error: "Regenerierung fehlgeschlagen",
+        job_done: "Job abgeschlossen ✓", job_failed: "Job mit Fehlern beendet.",
+        mismatch: "Server-Version veraltet: Der laufende Server kennt die neuen Endpoints (/api/state, /api/settings) noch nicht. Im Projektordner ausführen (ohne sudo): <code>./restart_server.sh</code> — beendet alle Prozesse auf Port 8765 und startet die aktuelle Version. Alternativ <code>./launch_desktop.sh</code>.",
+        models_loaded: "Modelle geladen", activity_done: "abgeschlossen", activity_running: "läuft",
+        activity_ai: "KI", ai_ok: "ok", ai_error: "fehler",
+      },
+      en: {
+        kicker: "World of Warcraft · deDE Localization",
+        brand_sub: "XTTS-v2 · Faster-Whisper QA · EBU R128 (−16 LUFS) · optional AI repair",
+        ethics: "Please do not upload generated voice packs to CurseForge/Wago on your own — respect the work of <b>Tuubby</b> &amp; the Chatty Little NPC team. Final quality control in the studio is up to you.",
+        stat_quests: "Quests", stat_problems: "Problems", stat_ok: "QA OK", stat_ai: "AI Calls",
+        idle: "Idle", running: "Running", running_ext: "Running (external)", done: "Done", error: "Error",
+        ready: "Ready", step_of: "Step", eta: "ETA",
+        no_job: "No pipeline job active. Start an action in the launchpad to see live progress.",
+        prepping: "Preparing step …",
+        panel_live: "Live Validation & Pipeline Status",
+        panel_ai: "AI Activity (repair after failed attempts)",
+        panel_launch: "Launchpad · Pipeline & Quality Control",
+        panel_overview: "Quality Overview",
+        panel_audit: "Independent Audit",
+        panel_aisettings: "AI Settings · Repair",
+        panel_activity: "Recent Activity",
+        panel_expansions: "Expansions",
+        exp_select: "Select addons to localize (multiple allowed):",
+        exp_none_selected: "Please select at least one addon.",
+        exp_never: "No expansion run yet.",
+        exp_finished: "done", exp_stopped: "paused",
+        ai_inactive: "Inactive", ai_none_configured: "(no external AI configured)", ai_ready: "✦ ready", ai_off: "◌ off",
+        ai_no_calls: "No AI calls in this run yet.",
+        kv_processed: "Processed", kv_passed: "Passed", kv_failed: "Problems", kv_retried: "Retries", kv_repaired: "AI-repaired",
+        kv_tokens: "Total tokens", kv_prompt: "Prompt", kv_completion: "Completion", kv_cost: "Cost (USD)",
+        step1: "Analysis", step2: "Voice Seeds", step3: "Script", step4: "Synthesis", step5: "Validation", step6: "Mastering", step7: "Audit",
+        validating: "Checking…", passed: "✓ Passed", failed: "✕ Failed", ai_repair: "AI repair",
+        attempt: "↻ Attempt", synthesizing: "Synthesizing…", cached: "Cached", mastering: "Mastering…", auditing: "Auditing…",
+        scripting: "Scripting…", seed: "Seed…", scraping: "Scraping…",
+        npc: "NPC", cer: "CER",
+        listen: "Listen live", listen_en: "▶ EN Original", listen_raw: "▶ RAW (unmastered)", listen_de: "▶ DE (mastered)",
+        mode_audit100: "100-quest random audit (fast)",
+        mode_auditfull: "Full audit of all mastered files",
+        mode_pilot: "20-quest benchmark pilot + audit",
+        mode_full: "Full expansion (quests + gossip + audit)",
+        mode_rebundle: "Rebuild bundle (step 6 only: build + install packs)",
+        mode_repair: "Repair fails (up to 20 attempts, then rebuild bundle)",
+        start: "▶ Start", console: "Console", console_hide: "Hide console", console_copy: "Copy", console_copied: "Console copied ✓",
+        search_ph: "Search: quest ID, title, NPC or text …",
+        all_speakers: "All speakers", all_races: "All races / FX",
+        sort_file: "Sort: file", sort_cer: "Sort: worst CER first", sort_title: "Sort: title",
+        chip_all: "All", chip_fail: "Problems", chip_pass: "OK", chip_open: "Open / unchecked",
+        no_data: "No data yet", no_data_hint: "Start the pilot or the full expansion — quests will appear here afterwards.",
+        no_results: "No entries found", no_results_hint: "Adjust filters or search.",
+        load_more: "Load more", load_more_more: "more of",
+        fx: "FX", in_progress: "● in progress", audit_pass: "Audit ✓", audit_fail: "Audit ✕",
+        qa_match: "QA", attempts_1: "attempt", attempts_n: "attempts",
+        ai_repaired_badge: "✦ AI-repaired",
+        processing_now: "being processed right now …", audio_no_qa: "Audio exists — QA pending", not_generated: "not generated yet",
+        script: "Script", phonetics: "Phonetics", standard_phonetics: "Standard phonetics", direction: "Direction", whisper: "Whisper",
+        de_mastered: "DE Localized", en_original: "EN Original", raw_unmastered: "RAW Unmastered",
+        reference: "Reference", en_gossip_ref: "EN match estimated (by length)", unmastered_sub: "24 kHz WAV · pre-mastering",
+        ab_compare: "A/B compare", play_de: "▶ DE", regen: "↻ Regenerate",
+        stop: "⏹ Stop", stop_toast: "Stopping job …", voice_seed: "Voice Seed",
+        topup_wait: "⏸ Paused — DeepSeek balance empty", topup_done_btn: "✅ TopUp done — resume",
+        topup_done_toast: "TopUp confirmed — the job resumes automatically shortly.",
+        approve: "✓ Mark as OK", approved_by_ear: "Approved (by ear)", approved_toast: "marked as OK ✓",
+        not_rendered: "Not rendered yet (step 6)",
+        ov_total: "Total quests", ov_validated: "Validated quests", ov_passed: "QA passed",
+        ov_problems: "With problems", ov_repaired: "AI-repaired", ov_retries: "Retries", ov_success: "Success rate (QA)",
+        no_audit: "No audit report yet.",
+        aud_checked: "Checked", aud_passed: "Passed", aud_avgcer: "Avg post-FX CER", aud_ready: "Release-ready",
+        aud_yes: "✓ Yes", aud_no: "— not yet",
+        ai_enable: "Enable AI repair", ai_provider: "Provider",
+        ai_provider_hint: "Optional: the pipeline works without a provider — failed lines simply won't be AI-repaired.",
+        ai_model: "Model", ai_models_load: "Load models", ai_models_loading: "Loading …",
+        ai_model_custom: "Custom model ID …", ai_baseurl: "Base URL (optional)", ai_baseurl_ph: "Provider default",
+        ai_trigger: "Use after", ai_retries: "Max total attempts", ai_key: "API Key",
+        key_set: "Key stored: lives only in the git-ignored <code>.env</code> — never on GitHub.",
+        key_unset: "No key set. Keys are written exclusively to the git-ignored <code>.env</code>.",
+        save: "Save", ai_test: "Test connection",
+        pricing: "Pricing basis", pricing_est: "(estimate)", pricing_per: "per 1M tokens (input/output)",
+        testing: "Testing connection …", models_error: "No models found.",
+        saved_toast: "AI settings saved (key stays local in .env)",
+        save_error: "Saving failed",
+        job_started: "Job started", job_start_error: "Failed to start",
+        job_running_busy: "A job is already running — please wait.",
+        regen_started: "Regeneration started (TTS → QA → FX)", regen_error: "Regeneration failed",
+        job_done: "Job finished ✓", job_failed: "Job finished with errors.",
+        mismatch: "Outdated server version: the running server does not know the new endpoints (/api/state, /api/settings). Run (no sudo): <code>./restart_server.sh</code> — it stops everything on port 8765 and starts the current version. Alternatively <code>./launch_desktop.sh</code>.",
+        models_loaded: "Models loaded", activity_done: "finished", activity_running: "running",
+        activity_ai: "AI", ai_ok: "ok", ai_error: "error",
+      },
+    };
+
+    const PROVIDER_LABELS = {
+      none:       { de: "Keine externe KI (nur lokale Regeln)", en: "No external AI (local rules only)" },
+      openai:     { de: "OpenAI", en: "OpenAI" },
+      openrouter: { de: "OpenRouter", en: "OpenRouter" },
+      google:     { de: "Google Gemini", en: "Google Gemini" },
+      deepseek:   { de: "DeepSeek", en: "DeepSeek" },
+      ollama:     { de: "Lokales Ollama", en: "Local Ollama" },
+    };
+
+    let LANG = "de";
+    try { LANG = localStorage.getItem("eoa_lang") || "de"; } catch (e) { LANG = "de"; }
+    if (LANG !== "de" && LANG !== "en") LANG = "de";
+
+    const t = (k) => (I18N[LANG] && I18N[LANG][k]) || I18N.de[k] || k;
+
+    const App = {
+      entries: [],
+      audit: null,
+      live: { state: null, running: false },
+      settings: null,
+      visible: 60,
+      modelPricing: {},
+      statistics: null,
+      expansions: [],
+      selectedExpansions: new Set(),
+      playing: false,
+      gridDirty: false,
+      liveAudio: null,
+      filters: { q: "", speaker: "all", race: "all", status: "all", sort: "file" },
+    };
+
+    /* ---------- helpers ---------- */
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+    async function api(path, opts) {
+      const res = await fetch(path, opts);
+      let data = null;
+      try { data = await res.json(); } catch (e) { /* non-JSON */ }
+      if (!res.ok) {
+        const msg = (data && data.error) ? data.error : `HTTP ${res.status}`;
+        throw new Error(msg);
+      }
+      return data;
+    }
+
+    function toast(msg, type = "ok") {
+      const host = $("toasts");
+      const el = document.createElement("div");
+      el.className = `toast ${type}`;
+      el.textContent = msg;
+      host.appendChild(el);
+      setTimeout(() => { el.style.opacity = "0"; el.style.transition = "opacity 0.4s"; }, 3400);
+      setTimeout(() => el.remove(), 3900);
+    }
+
+    function fmtEta(sec) {
+      if (sec == null || isNaN(sec)) return "—";
+      sec = Math.max(0, Math.round(sec));
+      if (sec < 60) return `${sec}s`;
+      if (sec < 3600) return `${Math.floor(sec / 60)}m ${sec % 60}s`;
+      return `${Math.floor(sec / 3600)}h ${Math.floor((sec % 3600) / 60)}m`;
+    }
+
+    function fmtPct(num) {
+      if (num == null || isNaN(num)) return "—";
+      return `${(num * 100).toFixed(1)}%`;
+    }
+
+    function fmtNum(num) {
+      if (num == null || isNaN(num)) return "0";
+      return Number(num).toLocaleString(LANG === "de" ? "de-DE" : "en-US");
+    }
+
+    /* ---------- i18n ---------- */
+    function applyI18n() {
+      document.documentElement.lang = LANG;
+      document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = t(el.dataset.i18n); });
+      document.querySelectorAll("[data-i18n-ph]").forEach((el) => { el.placeholder = t(el.dataset.i18nPh); });
+      $("ethicsText").innerHTML = t("ethics");
+      // AI provider options (server labels are German-only)
+      const prov = $("aiProvider");
+      if (prov) {
+        const cur = prov.value || (App.settings && App.settings.provider) || "none";
+        prov.innerHTML = "";
+        Object.keys(PROVIDER_LABELS).forEach((k) => {
+          prov.appendChild(new Option(PROVIDER_LABELS[k][LANG] || PROVIDER_LABELS[k].de, k));
+        });
+        prov.value = cur;
+      }
+      $("langToggle").innerHTML = LANG === "de"
+        ? '<span class="active-lang">DE</span> / EN'
+        : 'DE / <span class="active-lang">EN</span>';
+      // re-render dynamic content
+      renderLive();
+      renderStats();
+      renderStatusChips();
+      renderGrid();
+      renderAudit();
+      updatePricingHint();
+      if (App.settings) fillSettingsForm();
+    }
+
+    function toggleLang() {
+      LANG = LANG === "de" ? "en" : "de";
+      try { localStorage.setItem("eoa_lang", LANG); } catch (e) { /* private mode */ }
+      applyI18n();
+    }
+
+    function cleanTextMarkup(str) {
+      let t = String(str ?? "");
+      const cut = t.search(/\s*\|\s*|\.\s*"date"|"\s*date|,\s*"date/);
+      if (cut > 0) t = t.slice(0, cut);
+      return t.trim();
+    }
+
+    /* ---------- entry status ---------- */
+    function entryStatus(e) {
+      const cur = App.live.state && App.live.state.current;
+      if (cur && cur.entry_id === e.entry_id && App.live.effectiveRunning) return "processing";
+      const qa = e.qa_result;
+      if (qa) return (qa.passed === true || (qa.passed !== false && qa.cer <= 0.15)) ? "pass" : "fail";
+      const hasAudio = e.final_ogg_duration_sec != null || e.final_ogg_path || e.raw_tts_wav;
+      return hasAudio ? "unverified" : "pending";
+    }
+
+    const STATUS_META = {
+      pass:       { cls: "st-pass",         chip: () => `<span class="chip-status pass">✓ ${t("chip_pass")}</span>` },
+      fail:       { cls: "st-fail",         chip: () => `<span class="chip-status fail">✕ ${t("chip_fail")}</span>` },
+      pending:    { cls: "st-pending",      chip: () => `<span class="chip-status validating">◌ ${t("chip_open").split(" / ")[0]}</span>` },
+      unverified: { cls: "st-unverified",   chip: () => `<span class="chip-status validating">◌ ${t("chip_open").split(" / ")[1] || t("chip_open")}</span>` },
+      processing: { cls: "st-processing",   chip: () => `<span class="chip-status retry">▶ ${t("in_progress").replace("● ", "")}</span>` },
+    };
+
+    /* ---------- playlist ---------- */
+    async function loadPlaylist() {
+      try {
+        const data = await api("/api/playlist");
+        App.entries = data.entries || [];
+        App.statistics = data.statistics || null;
+        const spk = $("speakerFilter");
+        const curSpk = spk.value;
+        spk.innerHTML = `<option value="all">${esc(t("all_speakers"))}</option>`;
+        [...new Set(App.entries.map((e) => e.npc_name))].filter(Boolean).sort().forEach((s) => {
+          spk.appendChild(new Option(s, s));
+        });
+        if (curSpk && App.entries.some((e) => e.npc_name === curSpk)) spk.value = curSpk;
+        const race = $("raceFilter");
+        const curRace = race.value;
+        race.innerHTML = `<option value="all">${esc(t("all_races"))}</option>`;
+        [...new Set(App.entries.map((e) => e.race))].filter(Boolean).sort().forEach((r) => {
+          race.appendChild(new Option(r, r));
+        });
+        if (curRace && App.entries.some((e) => e.race === curRace)) race.value = curRace;
+        renderStats();
+        renderStatusChips();
+        renderGrid();
+      } catch (err) { /* Playlist not ready yet — shown by empty state */ }
+    }
+
+    async function loadAudit() {
+      try {
+        App.audit = await api("/api/audit");
+        renderAudit();
+      } catch (e) { /* no audit yet */ }
+    }
+
+    async function loadSettings() {
+      try {
+        App.settings = await api("/api/settings");
+        fillSettingsForm();
+      } catch (e) { /* old server or not ready — static fallbacks stay */ }
+    }
+
+    /* ---------- stale server detection ---------- */
+    async function checkServerVersion() {
+      try {
+        await api("/api/version");
+        App.serverMismatchShown = false;
+        const b = $("mismatchBanner");
+        if (b) b.remove();
+      } catch (err) {
+        if (App.serverMismatchShown) return;
+        App.serverMismatchShown = true;
+        const b = document.createElement("div");
+        b.className = "ethics-banner";
+        b.id = "mismatchBanner";
+        b.style.borderColor = "rgba(255,97,97,0.55)";
+        b.innerHTML = `<div><b>${esc(t("error"))}:</b> ${t("mismatch")}</div>`;
+        const live = $("livePanel");
+        live.parentNode.insertBefore(b, live);
+      }
+    }
+
+    /* ---------- live state polling ---------- */
+    function liveStateActive(state) {
+      if (!state || !state.started_at) return false;
+      if (state.finished_at) return false;
+      // Letzter Schritt abgeschlossen -> Job ist fertig, auch ohne finished_at
+      if (state.step && state.step.done) return false;
+      const age = Date.now() / 1000 - (state.updated_at || 0);
+      return age < 180; // noch aktive Schreiber (auch CLI-gestartete Jobs)
+    }
+
+    async function pollLive() {
+      if (App.serverMismatchShown) {
+        if (Date.now() - (App.lastVerCheck || 0) > 20000) {
+          App.lastVerCheck = Date.now();
+          checkServerVersion();
+        }
+        return;
+      }
+      try {
+        let st;
+        try {
+          st = await api("/api/state");
+        } catch (_) {
+          st = await api("/api/job_status");
+        }
+        const prevRunning = App.live.running;
+        App.live.state = st.state || null;
+        App.live.running = !!st.running;
+        App.live.external = !st.running && liveStateActive(App.live.state);
+        App.live.effectiveRunning = App.live.running || App.live.external;
+        App.live.job = st;
+        const sb = document.getElementById("stopBtn");
+        if (sb) sb.style.display = App.live.effectiveRunning ? "" : "none";
+        const tb = document.getElementById("topupBtn");
+        if (tb) tb.style.display = (App.live.effectiveRunning && App.live.state && App.live.state.paused) ? "" : "none";
+        renderLive();
+        renderStats();
+        if (prevRunning !== App.live.effectiveRunning) {
+          loadPlaylist();
+          loadAudit();
+        }
+      } catch (e) {
+        App.lastVerCheck = Date.now();
+        checkServerVersion();
+      }
+    }
+
+    /* ---------- live listening ---------- */
+    function playUrl(url) {
+      if (App.liveAudio) { App.liveAudio.pause(); App.liveAudio = null; }
+      const a = new Audio(url);
+      App.liveAudio = a;
+      a.play().catch(() => {});
+    }
+
+    function listenLive(kind) {
+      const cur = App.live.state && App.live.state.current;
+      if (!cur || !cur.entry_id) return;
+      const entry = App.entries.find((e) => e.entry_id === cur.entry_id) || {};
+      if (kind === "en" && entry.source_ogg_filename) {
+        playUrl(`/audio/en/${encodeURIComponent(entry.source_ogg_filename)}`);
+      } else if (kind === "raw") {
+        playUrl(`/audio/raw/${encodeURIComponent(cur.entry_id)}_raw.wav`);
+      } else if (kind === "de" && entry.target_ogg_filename) {
+        playUrl(`/audio/de/${encodeURIComponent(entry.target_ogg_filename)}`);
+      }
+    }
+
+    /* ---------- expansion overview ---------- */
+    const EXPANSION_NAMES = ["Midnight", "The_War_Within", "Dragonflight", "Battle_for_Azeroth", "Wrath_of_the_Lich_King", "Vanilla"];
+
+    function currentExpansion() {
+      // 1. Try expansion from active playlist metadata
+      if (App.playlist && App.playlist.addon_architecture && App.playlist.addon_architecture.expansion) {
+        return App.playlist.addon_architecture.expansion;
+      }
+      // 2. Scan job logs backwards for --expansion <Name>
+      const logs = (App.live.job && App.live.job.logs) || [];
+      for (let i = logs.length - 1; i >= 0; i--) {
+        const m = String(logs[i]).match(/--expansion\s+([A-Za-z0-9_]+)/);
+        if (m && EXPANSION_NAMES.includes(m[1])) return m[1];
+      }
+      // 3. Check expStatus if available
+      const expStatus = (App.live.job && App.live.job.expansion_status) || {};
+      let latest = null;
+      Object.entries(expStatus).forEach(([exp, s]) => {
+        if (!s.finished && (!latest || (s.updated_at || 0) > (latest.s.updated_at || 0))) {
+          latest = { exp, s };
+        }
+      });
+      if (latest) return latest.exp;
+      // 4. Fallback to first expansion if list
+      const st = App.live.state || {};
+      if (st.expansion) {
+        const first = st.expansion.split(",")[0].trim();
+        if (EXPANSION_NAMES.includes(first)) return first;
+        return st.expansion;
+      }
+      return null;
+    }
+
+    function renderExpansions() {
+      const expStatus = (App.live.job && App.live.job.expansion_status) || {};
+      const current = currentExpansion();
+      const liveCounts = (App.live.state && App.live.state.counts) || {};
+      const liveStep = (App.live.state && App.live.state.step) || null;
+      const stepLabels = { analyze: t("step1"), voices: t("step2"), script: t("step3"), tts: t("step4"), qa: t("step5"), fx: t("step6"), audit: t("step7") };
+      $("expansionsRows").innerHTML = EXPANSION_NAMES.map((name) => {
+        const s = expStatus[name];
+        const disp = name.replace(/_/g, " ");
+        if (name === current) {
+          // Läuft gerade: Live-Daten aus dem laufenden Job
+          const stepLbl = liveStep ? (stepLabels[liveStep.key] || liveStep.label || liveStep.key) : "…";
+          const p = liveCounts.processed || 0;
+          const tot = liveCounts.total || App.entries.length || 0;
+          const prog = tot ? ` · ${p}/${tot}` : "";
+          const qaTxt = (liveStep && liveStep.key === "qa")
+            ? ` · ${liveCounts.passed || 0}✓ ${liveCounts.failed || 0}✕`
+            : "";
+          return `<div class="ov-row"><span class="l">${esc(disp)}</span><span class="v" style="color:var(--gold)">▶ ${esc(stepLbl)}${prog}${qaTxt}</span></div>`;
+        }
+        if (s && s.finished) {
+          const c = s.counts || {};
+          const nums = c.total ? ` · ${c.passed || 0}✓ ${c.failed || 0}✕` : "";
+          return `<div class="ov-row"><span class="l">${esc(disp)}</span><span class="v" style="color:var(--green)">✓ ${esc(t("exp_finished"))} · ${esc(stepLabels[s.step] || s.step || "")}${nums}</span></div>`;
+        }
+        if (s) {
+          return `<div class="ov-row"><span class="l">${esc(disp)}</span><span class="v">${esc(stepLabels[s.step] || s.step || "")} ✓ ${esc(t("exp_stopped"))}</span></div>`;
+        }
+        return `<div class="ov-row"><span class="l">${esc(disp)}</span><span class="v" style="color:var(--text-3)">—</span></div>`;
+      }).join("");
+    }
+
+    function renderLive() {
+      const st = App.live.state || {};
+      const badge = $("liveStatusBadge");
+      const badgeText = $("statusBadgeText");
+      $("startJobBtn").disabled = App.live.effectiveRunning;
+
+      if (App.live.effectiveRunning) {
+        if (st.paused) {
+          badge.className = "status-badge error";
+          badgeText.textContent = t("topup_wait");
+        } else {
+          badge.className = "status-badge running";
+          badgeText.textContent = App.live.external
+            ? t("running_ext")
+            : `${t("running")} · ${(App.live.job && App.live.job.mode) || "Job"}`;
+        }
+      } else if ((st.finished_at && st.step) || (st.step && st.step.done)) {
+        badge.className = st.ok === false ? "status-badge error" : "status-badge done";
+        badgeText.textContent = st.ok === false ? t("error") : t("done");
+        if (App.jobWasRunning) {
+          toast(st.ok === false ? t("job_failed") : t("job_done"), st.ok === false ? "err" : "ok");
+        }
+      } else {
+        badge.className = "status-badge";
+        badgeText.textContent = t("idle");
+      }
+      App.jobWasRunning = App.live.effectiveRunning;
+
+      // step chips
+      const totalSteps = st.total_steps || 7;
+      const stepLabels = {
+        1: t("step1"), 2: t("step2"), 3: t("step3"), 4: t("step4"), 5: t("step5"), 6: t("step6"), 7: t("step7"),
+      };
+      let chips = "";
+      for (let i = 1; i <= totalSteps; i++) {
+        let cls = "";
+        if (st.step && st.step.index === i && !st.step.done) cls = "active";
+        else if ((st.step && st.step.index > i) || (st.step && st.step.index === i && st.step.done)) cls = "done";
+        chips += `<div class="step-chip ${cls}"><span class="n">${i}</span>${esc(stepLabels[i] || i)}</div>`;
+      }
+      $("stepChips").innerHTML = chips;
+
+      // progress
+      const counts = st.counts || {};
+      let total = counts.total || 0;
+      let processed = counts.processed || 0;
+      const qaCount = App.entries.filter((e) => e.qa_result).length;
+      // Fallback nur, wenn die Live-Zähler wirklich hinterherhinken und die
+      // Playlist-Zahl ins Gesamtbild passt (nicht bei Resume-Läufen, wo der
+      // Katalog mehr validierte Einträge enthält als der Lauf abarbeiten muss).
+      const useQaFallback = st.step && st.step.key === "qa" && qaCount > processed && (!total || qaCount <= total);
+      if (useQaFallback) {
+        processed = qaCount;
+        if (!total) total = App.entries.length;
+      }
+      const pct = total > 0 ? Math.min(100, (processed / total) * 100) : 0;
+      $("progressFill").style.width = `${pct}%`;
+      $("liveCounts").textContent = `${processed} / ${total || App.entries.length || 0}`;
+      if (st.eta_seconds != null) {
+        App.lastEta = { value: st.eta_seconds, at: Date.now() };
+      }
+      let displayEta = st.eta_seconds;
+      if (App.lastEta && displayEta != null) {
+        displayEta = Math.max(0, App.lastEta.value - Math.floor((Date.now() - App.lastEta.at) / 1000));
+      }
+      $("liveEta").textContent = useQaFallback ? "—" : fmtEta(displayEta);
+      $("liveStepLabel").textContent = st.step
+        ? `${t("step_of")} ${st.step.index}/${totalSteps} · ${esc(st.step.label || stepLabels[st.step.index] || "")}${st.step.done ? " ✓" : ""}`
+        : t("ready");
+
+      // Aktuelle Expansion (Badge im Live-Panel)
+      const curExp = currentExpansion();
+      const expBadge = $("liveExpansion");
+      if (curExp) {
+        expBadge.textContent = curExp.replace(/_/g, " ");
+        expBadge.style.display = "";
+      } else {
+        expBadge.style.display = "none";
+      }
+
+      // current entry spotlight
+      const cur = st.current;
+      const curCard = $("currentCard");
+      if (cur && cur.entry_id) {
+        curCard.style.display = "";
+        $("curId").textContent = cur.entry_id;
+        $("curTitle").textContent = cleanTextMarkup(cur.quest_title_de) || cur.entry_id;
+        $("curNpc").textContent = `${t("npc")}: ${cleanTextMarkup(cur.npc_name) || "—"}${cur.phase ? ` · ${cur.phase}` : ""}`;
+        $("curExpansion").textContent = curExp ? curExp.replace(/_/g, " ") : "";
+        let chipCls = "validating";
+        let chipLabel = t("validating");
+        if (cur.status === "passed") { chipCls = "pass"; chipLabel = t("passed"); }
+        else if (cur.status === "failed") { chipCls = "fail"; chipLabel = t("failed"); }
+        else if (cur.status === "ai_repair") { chipCls = "ai"; chipLabel = `✨ ${t("ai_repair")} (${cur.ai_provider || "AI"})`; }
+        else if (String(cur.status).startsWith("attempt_")) { chipCls = "retry"; chipLabel = `${t("attempt")} ${cur.attempt || ""}`; }
+        else if (cur.status === "synthesizing") { chipLabel = t("synthesizing"); }
+        else if (cur.status === "synth_cached") { chipLabel = t("cached"); }
+        else if (cur.status === "mastering") { chipLabel = t("mastering"); }
+        else if (cur.status === "auditing") { chipLabel = t("auditing"); }
+        else if (cur.status === "scripting") { chipLabel = t("scripting"); }
+        else if (cur.status === "extracting_seed") { chipLabel = t("seed"); }
+        else if (cur.status === "scraping") { chipLabel = t("scraping"); }
+        $("curStatusChip").innerHTML = `<span class="chip-status ${chipCls}">${esc(chipLabel)}</span>`;
+        $("curCer").textContent = cur.cer != null ? `${t("cer")} ${cur.cer.toFixed(1)}%` : "";
+        $("curListenRow").innerHTML = `
+          <span class="listen-row-label key-hint" style="align-self:center;margin-right:0.2rem;">${esc(t("listen"))}:</span>
+          <button class="btn-mini blue" onclick="listenLive('en')">${esc(t("listen_en"))}</button>
+          <button class="btn-mini purple" onclick="listenLive('raw')">${esc(t("listen_raw"))}</button>
+          <button class="btn-mini gold" onclick="listenLive('de')">${esc(t("listen_de"))}</button>`;
+        $("liveIdleNote").style.display = "none";
+      } else {
+        curCard.style.display = "none";
+        $("liveIdleNote").style.display = App.live.effectiveRunning ? "none" : "";
+        $("liveIdleNote").textContent = App.live.effectiveRunning ? t("prepping") : t("no_job");
+      }
+
+      // kv grid
+      const kv = [];
+      if (counts.total != null) kv.push([t("kv_processed"), processed, "gold"]);
+      if (counts.passed != null) kv.push([t("kv_passed"), counts.passed || 0, "green"]);
+      if (counts.failed != null) kv.push([t("kv_failed"), counts.failed || 0, "red"]);
+      if (counts.retried != null) kv.push([t("kv_retried"), counts.retried || 0, "gold"]);
+      if (counts.ai_repaired != null) kv.push([t("kv_repaired"), counts.ai_repaired || 0, "purple"]);
+      $("liveKvGrid").innerHTML = kv.map(([l, v, c]) =>
+        `<div class="kv"><div class="l">${esc(l)}</div><div class="v ${c}">${v}</div></div>`).join("");
+
+      // AI status
+      const ai = st.ai || {};
+      const safeAi = (App.live.job && App.live.job.ai) || App.settings || {};
+      const provider = ai.provider || safeAi.provider || "none";
+      const model = ai.model || safeAi.model || "";
+      const aiEnabled = ai.enabled != null ? ai.enabled : safeAi.enabled;
+      const providerName = (provider && provider !== "none" && aiEnabled)
+        ? ((PROVIDER_LABELS[provider] && PROVIDER_LABELS[provider][LANG]) || (safeAi.providers && safeAi.providers[provider] && safeAi.providers[provider].label) || provider)
+        : t("ai_inactive");
+      $("aiProviderName").textContent = providerName;
+      $("aiProviderMeta").textContent = (provider && provider !== "none" && aiEnabled) ? (model || "") : t("ai_none_configured");
+      $("aiProviderOk").innerHTML = (provider && provider !== "none" && aiEnabled)
+        ? `<span class="chip-status ai">${esc(t("ai_ready"))}</span>`
+        : `<span class="chip-status validating">${esc(t("ai_off"))}</span>`;
+
+      const calls = (ai.calls || []).slice(-6).reverse();
+      $("aiFeed").innerHTML = calls.length ? calls.map((c) => `
+        <div class="ai-line">
+          <span class="t">${esc(c.at)}</span>
+          <span class="provider">${esc(c.provider)}${c.model ? "/" + esc(String(c.model).split("/").pop()) : ""}</span>
+          <span class="entry">${esc(c.entry_id)}</span>
+          ${c.tokens && c.tokens.total ? `<span class="entry">${fmtNum(c.tokens.total)} Tok</span>` : ""}
+          ${c.cost_usd ? `<span class="entry">$${c.cost_usd.toFixed(4)}</span>` : ""}
+          <span style="margin-left:auto" class="${c.ok ? "ok" : "fail"}">${c.ok ? "✓" : "✕"}</span>
+        </div>`).join("") : `<div class="empty-note">${esc(t("ai_no_calls"))}</div>`;
+
+      // Lifetime token & cost usage
+      const usage = (App.live.job && App.live.job.usage) || {};
+      const uTokens = usage.total_tokens || 0;
+      const uCost = usage.cost_usd || 0;
+      $("aiUsageGrid").innerHTML = `
+        <div class="kv"><div class="l">${esc(t("kv_tokens"))}</div><div class="v purple">${fmtNum(uTokens)}</div></div>
+        <div class="kv"><div class="l">${esc(t("kv_prompt"))}</div><div class="v">${fmtNum(usage.prompt_tokens || 0)}</div></div>
+        <div class="kv"><div class="l">${esc(t("kv_completion"))}</div><div class="v">${fmtNum(usage.completion_tokens || 0)}</div></div>
+        <div class="kv"><div class="l">${esc(t("kv_cost"))}</div><div class="v ${uCost > 0 ? "gold" : ""}">$${Number(uCost).toFixed(4)}</div></div>
+      `;
+
+      // activity feed (aside)
+      const feed = [];
+      if (st.step) feed.push({ t: st.step.done ? "✓" : "▶", txt: `${esc(st.step.label || "")} ${st.step.done ? t("activity_done") : t("activity_running")}` });
+      if (cur && cur.entry_id) feed.push({ t: "◉", txt: `${cur.entry_id} · ${cur.status || ""}` });
+      calls.slice(-3).forEach((c) => feed.push({ t: "✦", txt: `${t("activity_ai")}: ${c.entry_id} (${c.ok ? t("ai_ok") : t("ai_error")})` }));
+      $("activityFeed").innerHTML = feed.length
+        ? feed.map((f) => `<div class="ai-line"><span class="t">${esc(f.t)}</span><span style="color:var(--text-2)">${esc(f.txt)}</span></div>`).join("")
+        : '<div class="empty-note">—</div>';
+
+      // console tail
+      if (App.live.job && App.live.job.logs && App.live.job.logs.length) {
+        const con = $("jobConsole");
+        con.textContent = App.live.job.logs.join("\n");
+        if (con.style.display !== "none") con.scrollTop = con.scrollHeight;
+      }
+
+      renderExpansions();
+    }
+
+    /* ---------- stats & filters ---------- */
+    function renderStats() {
+      const es = App.entries;
+      const totalAll = es.length;
+      const enTotal = (App.statistics && App.statistics.quest_en_files) || (App.statistics && App.statistics.total_en_files) || 0;
+      $("statTotal").textContent = totalAll
+        ? (enTotal ? `${totalAll}/${enTotal}` : String(totalAll))
+        : "—";
+
+      const liveSt = App.live.state || {};
+      const liveC = liveSt.counts || {};
+      const withQa = es.filter((e) => e.qa_result);
+      let liveQaActive = App.live.effectiveRunning && liveSt.step && liveSt.step.key === "qa" && liveC.total > 0;
+      if (liveQaActive && withQa.length > (liveC.processed || 0)) liveQaActive = false;
+
+      let total = totalAll;
+      let problems = 0;
+      let passed = 0;
+      if (liveQaActive) {
+        total = liveC.total;
+        problems = liveC.failed || 0;
+        passed = liveC.passed || 0;
+      } else {
+        problems = withQa.filter((e) => e.qa_result.passed === false || e.qa_result.cer > 0.15).length;
+        passed = withQa.length - problems;
+      }
+      const pct = total ? ((problems / total) * 100).toFixed(1) : "0.0";
+      $("statProblems").textContent = problems ? `${problems} · ${pct}%` : "0";
+      $("statPass").textContent = (liveQaActive || withQa.length) ? String(passed) : "—";
+
+      const cerSum = withQa.reduce((a, e) => a + (e.qa_result.cer || 0), 0);
+      $("statCer").textContent = withQa.length ? fmtPct(cerSum / withQa.length) : "—";
+
+      const liveAiCalls = (App.live.state && App.live.state.ai && App.live.state.ai.calls) || [];
+      const usageCalls = (App.live.job && App.live.job.usage && App.live.job.usage.calls) || 0;
+      $("statAI").textContent = (usageCalls || liveAiCalls.length) ? String(usageCalls || liveAiCalls.length) : "—";
+
+      // Aside overview card
+      const okPct = withQa.length ? ((passed / withQa.length) * 100) : 0;
+      $("overviewRows").innerHTML = `
+        <div class="ov-row"><span class="l">${esc(t("ov_total"))}</span><span class="v">${totalAll || "—"}</span></div>
+        ${enTotal ? `<div class="ov-row"><span class="l">EN Quest-Dateien</span><span class="v">${enTotal}</span></div>` : ""}
+        <div class="ov-row"><span class="l">${esc(t("ov_validated"))}</span><span class="v">${liveQaActive ? `${(liveC.processed || 0)} / ${total}` : withQa.length}</span></div>
+        <div class="ov-row"><span class="l">${esc(t("ov_passed"))}</span><span class="v" style="color:var(--green)">${passed}</span></div>
+        <div class="ov-row"><span class="l">${esc(t("ov_problems"))}</span><span class="v" style="color:${problems ? "var(--red)" : "var(--green)"}">${problems}${total ? ` (${pct}%)` : ""}</span></div>
+        <div class="mini-bar"><i style="width:${total ? (problems / total) * 100 : 0}%;background:var(--red);"></i></div>
+        <div class="ov-row"><span class="l">${esc(t("ov_repaired"))}</span><span class="v" style="color:var(--purple)">${liveQaActive ? (liveC.ai_repaired || 0) : withQa.filter((e) => e.qa_result.ai_used).length}</span></div>
+        <div class="ov-row"><span class="l">${esc(t("ov_retries"))}</span><span class="v">${liveQaActive ? (liveC.retried || 0) : withQa.filter((e) => e.qa_result.attempts > 1).length}</span></div>
+        <div class="mini-bar"><i style="width:${Math.min(100, okPct)}%;background:var(--green);"></i></div>
+        <div class="ov-row"><span class="l">${esc(t("ov_success"))}</span><span class="v">${withQa.length || liveQaActive ? okPct.toFixed(1) + "%" : "—"}</span></div>
+      `;
+    }
+
+    function renderStatusChips() {
+      const counts = { all: App.entries.length, fail: 0, pass: 0, open: 0 };
+      App.entries.forEach((e) => {
+        const s = entryStatus(e);
+        if (s === "fail") counts.fail++;
+        else if (s === "pass") counts.pass++;
+        else counts.open++;
+      });
+      const defs = [
+        ["all", t("chip_all")],
+        ["fail", t("chip_fail")],
+        ["pass", t("chip_pass")],
+        ["open", t("chip_open")],
+      ];
+      $("statusChips").innerHTML = defs.map(([k, l]) =>
+        `<button class="chip-filter ${App.filters.status === k ? "on" : ""}" data-status="${k}">${esc(l)} <span class="cnt">${counts[k]}</span></button>`
+      ).join("");
+      $("statusChips").querySelectorAll(".chip-filter").forEach((b) => {
+        b.onclick = () => { App.filters.status = b.dataset.status; renderStatusChips(); renderGrid(); };
+      });
+    }
+
+    /* ---------- grid ---------- */
+    function filteredEntries() {
+      const f = App.filters;
+      return App.entries.filter((e) => {
+        if (f.speaker !== "all" && e.npc_name !== f.speaker) return false;
+        if (f.race !== "all" && e.race !== f.race) return false;
+        if (f.status === "fail" && entryStatus(e) !== "fail") return false;
+        if (f.status === "pass" && entryStatus(e) !== "pass") return false;
+        if (f.status === "open" && !["pending", "unverified"].includes(entryStatus(e))) return false;
+        if (f.q) {
+          const hay = `${e.entry_id} ${e.quest_title_de} ${e.npc_name} ${e.clean_de_text} ${e.zone}`.toLowerCase();
+          if (!hay.includes(f.q)) return false;
+        }
+        return true;
+      }).sort((a, b) => {
+        if (f.sort === "cer") {
+          const ca = a.qa_result ? a.qa_result.cer : -1;
+          const cb = b.qa_result ? b.qa_result.cer : -1;
+          return cb - ca;
+        }
+        if (f.sort === "title") return String(a.quest_title_de).localeCompare(String(b.quest_title_de));
+        return String(a.entry_id).localeCompare(String(b.entry_id));
+      });
+    }
+
+    function cardHtml(e) {
+      const st = entryStatus(e);
+      const meta = STATUS_META[st] || STATUS_META.pending;
+      const qa = e.qa_result || null;
+      const qaOk = qa ? (qa.passed === true || (qa.passed !== false && qa.cer <= 0.15)) : false;
+      const liveCur = App.live.state && App.live.state.current;
+      const isLive = App.live.effectiveRunning && liveCur && liveCur.entry_id === e.entry_id;
+
+      // QA bar
+      let qaLine = "";
+      if (qa) {
+        const match = Math.max(0, Math.min(100, 100 - qa.cer * 100));
+        const ok = qaOk;
+        const barColor = ok ? "var(--green)" : "var(--red)";
+        const approvedBadge = qa.approved_by_user
+          ? `<span class="badge" style="background:var(--green-soft);color:var(--green);border:1px solid rgba(52,209,123,0.35);">${esc(t("approved_by_ear"))}</span>`
+          : "";
+        const attemptsTxt = (qa.attempts || 1) === 1 ? t("attempts_1") : t("attempts_n");
+        const aiNote = qa.ai_used
+          ? `<span class="badge race" style="background:var(--purple-soft);color:#cf9bff;border-color:var(--purple-border);">${esc(t("ai_repaired_badge"))} (${esc(qa.ai_provider || "AI")})</span>`
+          : "";
+        const reasonChip = (!ok && qa.hallucination_reason)
+          ? `<span class="badge" style="background:var(--red-soft);color:var(--red);border:1px solid rgba(255,97,97,0.3);font-family:var(--mono);">${esc(qa.hallucination_reason)}</span>`
+          : "";
+        qaLine = `
+          <div class="qa-line">
+            <span class="qa-txt ${ok ? "ok" : "bad"}">${ok ? "✓" : "✕"} ${esc(t("qa_match"))} ${match.toFixed(1)}% · ${qa.attempts || 1} ${esc(attemptsTxt)}</span>
+            ${aiNote}
+            ${approvedBadge}
+            ${reasonChip}
+            <div class="matchbar"><i style="width:${match}%;background:${barColor};"></i></div>
+          </div>`;
+      } else {
+        qaLine = `<div class="qa-line"><span class="qa-txt">${esc(isLive ? t("processing_now") : (st === "unverified" ? t("audio_no_qa") : t("not_generated")))}</span></div>`;
+      }
+
+      const npcClean = cleanTextMarkup(e.npc_name);
+      const titleClean = cleanTextMarkup(e.quest_title_de);
+      const auditHit = App.audit && (App.audit.results || []).find((r) => r.entry_id === e.entry_id);
+      const auditChip = auditHit
+        ? `<span class="badge ${auditHit.passed ? "race" : ""}" style="${auditHit.passed ? "" : "background:var(--red-soft);color:var(--red);border:1px solid rgba(255,97,97,0.3);"}">${esc(t(auditHit.passed ? "audit_pass" : "audit_fail"))} ${fmtPct(auditHit.post_fx_cer)} CER</span>`
+        : "";
+
+      const phonetics = (e.phonetic_replacements && e.phonetic_replacements.length)
+        ? e.phonetic_replacements.join(" · ")
+        : t("standard_phonetics");
+      const seedFile = e.reference_voice_wav ? e.reference_voice_wav.split("/").pop() : "";
+      const rawFile = e.raw_tts_wav ? e.raw_tts_wav.split("/").pop() : "";
+      const hasMastered = e.final_ogg_duration_sec != null || e.final_ogg_path;
+
+      return `
+      <article class="quest-card ${meta.cls}" id="card-${esc(e.entry_id)}">
+        <div class="card-top">
+          <div>
+            <div class="card-idline">
+              <span class="badge file">${esc(e.target_ogg_filename)}</span>
+              ${isLive ? `<span class="badge live">${esc(t("in_progress"))}</span>` : ""}
+              <span class="badge race">${esc(t("fx"))} · ${esc(e.race || "Default")}</span>
+              <span class="badge zone">${esc(e.zone || "")}${e.subzone ? " — " + esc(e.subzone) : ""}</span>
+              ${auditChip}
+            </div>
+            <div class="card-title"><span class="npc">${esc(npcClean || "NPC")}</span> — ${esc(titleClean || "Quest " + e.quest_id)} <span class="phase">· ${esc(e.phase || "")}</span></div>
+          </div>
+          <div>${meta.chip()}</div>
+        </div>
+
+        ${qaLine}
+
+        <div class="card-body">
+          <div class="text-box">
+            <div class="de-text">„${esc(e.clean_de_text || "—")}“</div>
+            <div class="sub-meta">
+              <div><b>${esc(t("script"))}:</b> ${esc(e.tts_script_text || e.clean_de_text || "—")}</div>
+              <div><b>${esc(t("phonetics"))}:</b> ${esc(phonetics)}${e.prosody && e.prosody.acting_note ? " · <b>" + esc(t("direction")) + ":</b> " + esc(e.prosody.acting_note) : ""}</div>
+              ${e.applied_eq_match && e.applied_eq_match.length ? `<div><b>EQ-Match:</b> ${e.applied_eq_match.length} Bänder an EN-Original angeglichen</div>` : ""}
+              ${qa ? `<div><b>${esc(t("whisper"))}:</b> „${esc(qa.transcript || "—")}“</div>` : ""}
+            </div>
+          </div>
+          <div class="players">
+            <div class="player-row de">
+              <div class="lang-tag"><span class="main">${esc(t("de_mastered"))}</span><span class="sub">${e.final_ogg_duration_sec || e.raw_tts_duration_sec || "?"}s · OGG −16 LUFS</span></div>
+              ${hasMastered
+                ? `<audio class="de-audio" controls preload="none" src="/audio/de/${esc(encodeURIComponent(e.target_ogg_filename))}"></audio>`
+                : `<span class="key-hint" style="margin:auto 0;">${esc(t("not_rendered"))}</span>`}
+            </div>
+            <div class="player-row raw">
+              <div class="lang-tag"><span class="main">${esc(t("raw_unmastered"))}</span><span class="sub">${e.raw_tts_duration_sec || "?"}s · ${esc(t("unmastered_sub"))}</span></div>
+              ${rawFile
+                ? `<audio controls preload="none" src="/audio/raw/${esc(encodeURIComponent(rawFile))}"></audio>`
+                : `<span class="key-hint" style="margin:auto 0;">${esc(t("not_generated"))}</span>`}
+            </div>
+            <div class="player-row">
+              <div class="lang-tag"><span class="main">${esc(t("en_original"))}</span><span class="sub">${e.source_duration_sec || "?"}s · ${esc(e.kind === "gossip" ? t("en_gossip_ref") : t("reference"))}</span></div>
+              <audio class="en-audio" controls preload="none" src="/audio/en/${esc(encodeURIComponent(e.source_ogg_filename))}"></audio>
+            </div>
+            <div class="card-actions">
+              <button class="btn-mini gold" onclick="playAB('${esc(e.entry_id)}')">${esc(t("ab_compare"))}</button>
+              <button class="btn-mini blue" onclick="playOnly('${esc(e.entry_id)}')">${esc(t("play_de"))}</button>
+              <button class="btn-mini red" ${App.live.effectiveRunning ? "disabled" : ""} onclick="regenerateEntry('${esc(e.entry_id)}')">${esc(t("regen"))}</button>
+              ${(!qaOk && qa) ? `<button class="btn-mini" style="color:var(--green);border-color:rgba(52,209,123,0.4);" ${App.live.effectiveRunning ? "disabled" : ""} onclick="approveEntry('${esc(e.entry_id)}')">${esc(t("approve"))}</button>` : ""}
+              ${seedFile ? `<a class="btn-mini" href="/audio/seed/${esc(encodeURIComponent(seedFile))}" target="_blank">${esc(t("voice_seed"))}</a>` : ""}
+            </div>
+          </div>
+        </div>
+      </article>`;
+    }
+
+    function renderGrid() {
+      if (App.playing) {
+        App.gridDirty = true;
+        return;
+      }
+      const list = filteredEntries();
+      const slice = list.slice(0, App.visible);
+      const container = $("playlistContainer");
+      if (!list.length) {
+        container.innerHTML = `<div class="empty-state"><div class="big">${esc(t("no_results"))}</div>${esc(t("no_results_hint"))}</div>`;
+        $("loadMoreBtn").style.display = "none";
+        return;
+      }
+      container.innerHTML = slice.map(cardHtml).join("");
+      container.querySelectorAll("audio").forEach((a) => {
+        a.addEventListener("play", () => { App.playing = true; });
+        a.addEventListener("pause", audioMaybeIdle);
+        a.addEventListener("ended", audioMaybeIdle);
+      });
+      $("loadMoreBtn").style.display = list.length > App.visible ? "" : "none";
+      $("loadMoreBtn").textContent = `${t("load_more")} (${Math.min(60, list.length - App.visible)} ${t("load_more_more")} ${list.length})`;
+    }
+
+    function audioMaybeIdle() {
+      const anyPlaying = Array.from(document.querySelectorAll("audio")).some((a) => !a.paused);
+      if (!anyPlaying) {
+        App.playing = false;
+        if (App.gridDirty) {
+          App.gridDirty = false;
+          renderGrid();
+        }
+      }
+    }
+
+    function loadMore() { App.visible += 60; renderGrid(); }
+
+    /* ---------- audio ---------- */
+    function stopAllAudio() {
+      document.querySelectorAll("audio").forEach((a) => { a.pause(); a.currentTime = 0; });
+    }
+
+    function playOnly(id) {
+      stopAllAudio();
+      const a = document.querySelector(`#card-${CSS.escape(id)} audio.de-audio`);
+      if (a) a.play().catch(() => {});
+    }
+
+    function playAB(id) {
+      stopAllAudio();
+      const card = document.querySelector(`#card-${CSS.escape(id)}`);
+      const de = card ? card.querySelector("audio.de-audio") : null;
+      const en = card ? card.querySelector("audio.en-audio") : null;
+      if (!en || !de) return;
+      en.play().then(() => {}).catch(() => {});
+      en.onended = () => setTimeout(() => de.play().catch(() => {}), 350);
+    }
+
+    /* ---------- jobs ---------- */
+    async function loadExpansions() {
+      try {
+        const data = await api("/api/expansions");
+        App.expansions = data.expansions || [];
+        if (!App.expansions.length) {
+          App.expansions = [
+            { id: "Midnight", name: "Midnight" },
+            { id: "The_War_Within", name: "The War Within" },
+            { id: "Dragonflight", name: "Dragonflight" },
+            { id: "Battle_for_Azeroth", name: "Battle for Azeroth" },
+            { id: "Wrath_of_the_Lich_King", name: "Wrath of the Lich King" },
+            { id: "Vanilla", name: "Vanilla" },
+          ];
+        }
+        // Standard: alle installierten auswählen
+        App.expansions.forEach((e) => App.selectedExpansions.add(e.id));
+        renderExpansionChips();
+      } catch (e) { /* Server älter — Standardliste */ }
+    }
+
+    function renderExpansionChips() {
+      const host = $("expansionChips");
+      host.innerHTML = App.expansions.map((e) => {
+        const on = App.selectedExpansions.has(e.id);
+        return `<button class="chip-filter chip-exp ${on ? "on" : ""}" data-exp="${esc(e.id)}">${on ? "✓ " : "✕ "}${esc(e.name)}</button>`;
+      }).join("");
+      host.querySelectorAll(".chip-filter").forEach((b) => {
+        b.onclick = () => {
+          const id = b.dataset.exp;
+          if (App.selectedExpansions.has(id)) {
+            App.selectedExpansions.delete(id);
+          } else {
+            App.selectedExpansions.add(id);
+          }
+          renderExpansionChips();
+        };
+      });
+    }
+
+    async function startJob() {
+      const mode = $("launchMode").value;
+      const expansions = [...App.selectedExpansions];
+      if (!expansions.length) {
+        toast(t("exp_none_selected"), "err");
+        return;
+      }
+      $("startJobBtn").disabled = true;
+      try {
+        await api("/api/start_job", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ expansions, mode }),
+        });
+        toast(`${t("job_started")}: ${mode} (${expansions.length})`, "gold");
+        showConsole();
+      } catch (err) {
+        toast(`${t("job_start_error")}: ${err.message}`, "err");
+      }
+      setTimeout(pollLive, 400);
+    }
+
+    async function stopJob() {
+      try {
+        await api("/api/stop_job", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+        toast(t("stop_toast"), "ok");
+        setTimeout(loadState, 2500);
+      } catch (err) {
+        toast(`${t("error")}: ${err.message}`, "err");
+      }
+    }
+
+    async function ackTopup() {
+      try {
+        await api("/api/ack_topup", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+        toast(t("topup_done_toast"), "ok");
+        setTimeout(loadState, 1500);
+      } catch (err) {
+        toast(`${t("error")}: ${err.message}`, "err");
+      }
+    }
+
+    async function approveEntry(id) {
+      try {
+        await api("/api/approve_entry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ entry_id: id }),
+        });
+        toast(`${id}: ${t("approved_toast")}`, "ok");
+        loadPlaylist();
+      } catch (err) {
+        toast(`${t("error")}: ${err.message}`, "err");
+      }
+    }
+
+    async function regenerateEntry(id) {
+      if (App.live.effectiveRunning) { toast(t("job_running_busy"), "err"); return; }
+      try {
+        await api("/api/regenerate_entry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            entry_id: id,
+            retries: parseInt($("aiRetries").value, 10) || 3,
+            ai_trigger: parseInt($("aiTrigger").value, 10) || 3,
+          }),
+        });
+        toast(`${id}: ${t("regen_started")}`, "gold");
+      } catch (err) {
+        toast(`${t("regen_error")}: ${err.message}`, "err");
+      }
+    }
+
+    function toggleConsole() {
+      const con = $("jobConsole");
+      const show = con.style.display === "none" || !con.style.display;
+      con.style.display = show ? "block" : "none";
+      $("consoleToggleBtn").textContent = show ? t("console_hide") : t("console");
+      $("consoleCopyBtn").style.display = show ? "" : "none";
+      if (show) con.scrollTop = con.scrollHeight;
+    }
+    function showConsole() {
+      $("jobConsole").style.display = "block";
+      $("consoleToggleBtn").textContent = t("console_hide");
+      $("consoleCopyBtn").style.display = "";
+    }
+
+    async function copyConsole() {
+      const text = $("jobConsole").textContent || "";
+      const done = () => toast(t("console_copied"), "ok");
+      try {
+        await navigator.clipboard.writeText(text);
+        done();
+      } catch (e) {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          done();
+        } catch (e2) {
+          toast(`${t("error")}: clipboard`, "err");
+        }
+        ta.remove();
+      }
+    }
+
+    /* ---------- audit card ---------- */
+    function renderAudit() {
+      const a = App.audit;
+      const body = $("auditBody");
+      if (!a || !a.audited_count) {
+        body.innerHTML = `<div class="empty-note">${esc(t("no_audit"))}</div>`;
+        return;
+      }
+      const rate = a.pass_rate_percent ?? 0;
+      const color = rate >= 95 ? "var(--green)" : rate >= 80 ? "var(--gold)" : "var(--red)";
+      body.innerHTML = `
+        <div class="ov-rows">
+          <div class="ov-row"><span class="l">${esc(t("aud_checked"))}</span><span class="v">${a.audited_count}</span></div>
+          <div class="ov-row"><span class="l">${esc(t("aud_passed"))}</span><span class="v" style="color:${color}">${a.passed_count} (${rate.toFixed(1)}%)</span></div>
+          <div class="mini-bar"><i style="width:${rate}%;background:${color};"></i></div>
+          <div class="ov-row"><span class="l">${esc(t("aud_avgcer"))}</span><span class="v">${a.average_post_fx_cer_percent ?? "—"}%</span></div>
+          <div class="ov-row"><span class="l">${esc(t("aud_ready"))}</span><span class="v" style="color:${a.release_ready_100_quests ? "var(--green)" : "var(--text-2)"}">${a.release_ready_100_quests ? esc(t("aud_yes")) : esc(t("aud_no"))}</span></div>
+        </div>`;
+    }
+
+    /* ---------- settings ---------- */
+    const MODEL_DEFAULTS = {
+      none:       { base_url: "",                                              default_model: "" },
+      openai:     { base_url: "https://api.openai.com/v1",                       default_model: "gpt-4o" },
+      openrouter: { base_url: "https://openrouter.ai/api/v1",                    default_model: "anthropic/claude-3.5-sonnet" },
+      google:     { base_url: "https://generativelanguage.googleapis.com/v1beta", default_model: "gemini-2.0-flash" },
+      deepseek:   { base_url: "https://api.deepseek.com/v1",                     default_model: "deepseek-chat" },
+      ollama:     { base_url: "http://127.0.0.1:11434",                          default_model: "qwen2.5:7b" },
+    };
+    const CUSTOM_MODEL = "__custom__";
+
+    function currentModel() {
+      const sel = $("aiModel");
+      if (sel.value === CUSTOM_MODEL) return $("aiModelCustom").value.trim();
+      return sel.value || "";
+    }
+
+    function setModelSelect(models, selectedId) {
+      const sel = $("aiModel");
+      sel.innerHTML = "";
+      models.forEach((m) => {
+        const label = m.pricing
+          ? `${m.id} · $${Number(m.pricing.input).toFixed(2)}/$ ${Number(m.pricing.output).toFixed(2)} pro 1M`
+          : m.id;
+        sel.appendChild(new Option(label, m.id));
+      });
+      sel.appendChild(new Option(t("ai_model_custom").replace(" …", " …"), CUSTOM_MODEL));
+      const known = models.some((m) => m.id === selectedId);
+      if (known && selectedId) {
+        sel.value = selectedId;
+        $("aiModelCustom").style.display = "none";
+        $("aiModelCustom").value = "";
+      } else if (selectedId) {
+        sel.value = CUSTOM_MODEL;
+        $("aiModelCustom").value = selectedId;
+        $("aiModelCustom").style.display = "";
+      } else {
+        sel.value = "";
+        $("aiModelCustom").style.display = "none";
+        $("aiModelCustom").value = "";
+      }
+      updatePricingHint();
+    }
+
+    function fillSettingsForm() {
+      const s = App.settings;
+      if (!s) return;
+      $("aiEnabled").checked = !!s.enabled;
+      const sel = $("aiProvider");
+      if (s.providers && Object.keys(s.providers).length) {
+        sel.innerHTML = "";
+        Object.entries(s.providers).forEach(([k, v]) => {
+          sel.appendChild(new Option((PROVIDER_LABELS[k] && PROVIDER_LABELS[k][LANG]) || v.label, k));
+        });
+      }
+      sel.value = s.provider || "none";
+      const defaults = MODEL_DEFAULTS[s.provider] || { default_model: "" };
+      const modelList = [];
+      if (s.model) modelList.push({ id: s.model, pricing: null });
+      if (defaults.default_model && defaults.default_model !== s.model) {
+        modelList.push({ id: defaults.default_model, pricing: null });
+      }
+      setModelSelect(modelList, s.model || defaults.default_model || "");
+      $("aiBaseUrl").value = s.base_url || "";
+      $("aiTrigger").value = s.trigger_after_failures || 3;
+      $("aiRetries").value = s.qa_retries || 3;
+      $("aiKey").value = "";
+      $("aiKey").placeholder = s.api_key_set ? "••••••••" : "••••••••";
+      $("aiKeyHint").innerHTML = s.api_key_set ? t("key_set") : t("key_unset");
+      $("aiProviderHint").textContent = t("ai_provider_hint");
+      $("testResult").className = "test-result";
+    }
+
+    async function saveSettings() {
+      const body = {
+        provider: $("aiProvider").value,
+        model: currentModel(),
+        base_url: $("aiBaseUrl").value.trim(),
+        enabled: $("aiEnabled").checked,
+        trigger_after_failures: parseInt($("aiTrigger").value, 10) || 3,
+        qa_retries: parseInt($("aiRetries").value, 10) || 3,
+      };
+      const key = $("aiKey").value.trim();
+      if (key) body.api_key = key;
+      try {
+        App.settings = await api("/api/settings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        $("aiKey").value = "";
+        fillSettingsForm();
+        toast(t("saved_toast"), "ok");
+      } catch (err) {
+        toast(`${t("save_error")}: ${err.message}`, "err");
+      }
+    }
+
+    async function testSettings() {
+      const body = {
+        provider: $("aiProvider").value,
+        model: currentModel(),
+        base_url: $("aiBaseUrl").value.trim(),
+        enabled: $("aiEnabled").checked,
+      };
+      const key = $("aiKey").value.trim();
+      if (key) body.api_key = key;
+      const out = $("testResult");
+      out.className = "test-result";
+      out.style.display = "block";
+      out.textContent = t("testing");
+      out.style.background = "";
+      out.style.color = "";
+      try {
+        const r = await api("/api/settings/test", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        out.className = `test-result ${r.ok ? "ok" : "fail"}`;
+        out.textContent = r.message;
+      } catch (err) {
+        out.className = "test-result fail";
+        out.textContent = `${t("error")}: ${err.message}`;
+      }
+    }
+
+    /* ---------- events ---------- */
+    let searchTimer = null;
+    $("searchInput").addEventListener("input", () => {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        App.filters.q = $("searchInput").value.toLowerCase().trim();
+        App.visible = 60;
+        renderGrid();
+      }, 180);
+    });
+    $("speakerFilter").addEventListener("change", () => { App.filters.speaker = $("speakerFilter").value; App.visible = 60; renderGrid(); });
+    $("raceFilter").addEventListener("change", () => { App.filters.race = $("raceFilter").value; App.visible = 60; renderGrid(); });
+    $("sortSelect").addEventListener("change", () => { App.filters.sort = $("sortSelect").value; App.visible = 60; renderGrid(); });
+    function updatePricingHint() {
+      const s = App.settings;
+      const p = $("aiProvider").value;
+      const model = currentModel();
+      let pricing = App.modelPricing[model] || null;
+      let source = "";
+      if (!pricing) {
+        pricing = (s && s.pricing && s.pricing[p]) || null;
+        source = ` ${t("pricing_est")}`;
+      }
+      const hint = $("pricingHint");
+      if (!pricing || (!pricing.input && !pricing.output)) {
+        hint.textContent = "";
+        return;
+      }
+      hint.textContent = `${t("pricing")}${source}: ${Number(pricing.input).toFixed(2)} $ / ${Number(pricing.output).toFixed(2)} $ ${t("pricing_per")}.`;
+    }
+
+    async function listModels() {
+      const body = {
+        provider: $("aiProvider").value,
+        base_url: $("aiBaseUrl").value.trim(),
+      };
+      const key = $("aiKey").value.trim();
+      if (key) body.api_key = key;
+      const btn = $("aiModelsBtn");
+      const out = $("testResult");
+      btn.disabled = true;
+      btn.textContent = t("ai_models_loading");
+      try {
+        const r = await api("/api/settings/models", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        if (r.ok && r.models && r.models.length) {
+          App.modelPricing = {};
+          r.models.forEach((m) => {
+            if (m.pricing) App.modelPricing[m.id] = m.pricing;
+          });
+          const keep = currentModel() || "";
+          setModelSelect(r.models, keep);
+          toast(`${r.message}`, "ok");
+        } else {
+          out.className = "test-result fail";
+          out.textContent = r.message || t("models_error");
+        }
+      } catch (err) {
+        out.className = "test-result fail";
+        out.textContent = `${t("error")}: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = t("ai_models_load");
+      }
+    }
+
+    $("aiProvider").addEventListener("change", () => {
+      const p = $("aiProvider").value;
+      const info = MODEL_DEFAULTS[p] || {};
+      App.modelPricing = {};
+      setModelSelect(
+        info.default_model ? [{ id: info.default_model, pricing: null }] : [],
+        info.default_model || ""
+      );
+      if (!$("aiBaseUrl").value) $("aiBaseUrl").value = info.base_url || "";
+    });
+    $("aiModel").addEventListener("change", () => {
+      $("aiModelCustom").style.display = $("aiModel").value === CUSTOM_MODEL ? "" : "none";
+      updatePricingHint();
+    });
+    $("aiModelCustom").addEventListener("input", updatePricingHint);
+
+    /* ---------- boot ---------- */
+    (async function boot() {
+      applyI18n();
+      await checkServerVersion();
+      await Promise.all([loadSettings(), loadAudit(), loadPlaylist(), loadExpansions()]);
+      applyI18n();
+      await pollLive();
+      setInterval(pollLive, 1200);
+      setInterval(loadAudit, 15000);
+      setInterval(() => { if (App.live.effectiveRunning) loadPlaylist(); }, 12000);
+    })();
+  </script>
+</body>
+</html>
